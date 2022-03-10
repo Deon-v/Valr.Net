@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Valr.Net.Enums;
 
-namespace Valr.Net.Objects.Models.Spot.Account
+namespace Valr.Net.Objects.Models.Spot.ExchangeData
 {
-    public class AccountTrade
+    public class ValrTrade
     {
         [JsonProperty("price")]
         public decimal Price { get; set; }
@@ -20,6 +20,15 @@ namespace Valr.Net.Objects.Models.Spot.Account
         [JsonProperty("side")]
         public OrderSide Side { get; set; }
 
+        [JsonProperty("takerSide")]
+        private OrderSide TakerSide
+        {
+            set
+            {
+                Side = value;
+            }
+        }
+
         [JsonProperty("sequenceId")]
         public int SequenceId { get; set; }
 
@@ -28,12 +37,14 @@ namespace Valr.Net.Objects.Models.Spot.Account
 
         [JsonProperty("orderId")]
         public Guid OrderId { get; set; }
+
+        [JsonProperty("quoteVolume")]
+        public decimal? QuoteVolume { get; set; }
     }
 
-
-    public class AccountTradeWrapper
+    public class TradeWrapper
     {
-        public AccountTrade[] Trades { get; set; }
+        public ValrTrade[] Trades { get; set; }
     }
 
 }

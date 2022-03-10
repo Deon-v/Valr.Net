@@ -39,7 +39,7 @@ namespace Valr.Net.Objects.Models.Spot.Account
     public class Transactiontype
     {
         [JsonProperty("type")]
-        public TransactionTypes Type { get; set; }
+        public TransactionType Type { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }

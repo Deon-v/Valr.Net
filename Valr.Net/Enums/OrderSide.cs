@@ -1,8 +1,12 @@
-﻿namespace Valr.Net.Enums
+﻿using Newtonsoft.Json;
+
+namespace Valr.Net.Enums
 {
     public enum OrderSide
     {
-        buy,
-        sell
+        [JsonProperty("buy")]
+        Buy,
+        [JsonProperty("sell")]
+        Sell
     }
 }
