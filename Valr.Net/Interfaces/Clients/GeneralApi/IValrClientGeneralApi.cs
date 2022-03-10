@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Valr.Net.Interfaces.Clients.GeneralApi
+﻿namespace Valr.Net.Interfaces.Clients.GeneralApi
 {
-    internal interface IValrClientGeneralApi
+    public interface IValrClientGeneralApi : IDisposable
     {
+        /// <summary>
+        /// Endpoints related to requesting data for and controlling sub accounts
+        /// </summary>
+        public IValrClientGeneralApiSubAccount SubAccount { get; }
     }
 }

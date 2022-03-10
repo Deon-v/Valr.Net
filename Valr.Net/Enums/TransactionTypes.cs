@@ -1,0 +1,32 @@
+﻿namespace Valr.Net.Enums
+{
+    public enum TransactionTypes
+    {
+        LIMIT_BUY,
+        LIMIT_SELL,
+        MARKET_BUY,
+        MARKET_SELL,
+        SIMPLE_BUY,
+        SIMPLE_SELL,
+        AUTO_BUY,
+        MAKER_REWARD,
+        BLOCKCHAIN_RECEIVE,
+        BLOCKCHAIN_SEND,
+        FIAT_DEPOSIT,
+        FIAT_WITHDRAWAL,
+        REFERRAL_REBATE,
+        REFERRAL_REWARD,
+        PROMOTIONAL_REBATE,
+        INTERNAL_TRANSFER,
+        FIAT_WITHDRAWAL_REVERSAL,
+        PAYMENT_SENT,
+        PAYMENT_RECEIVED,
+        PAYMENT_REVERSED,
+        PAYMENT_REWARD,
+        OFF_CHAIN_BLOCKCHAIN_WITHDRAW,
+        OFF_CHAIN_BLOCKCHAIN_DEPOSIT,
+        SIMPLE_SWAP_BUY,
+        SIMPLE_SWAP_SELL,
+        SIMPLE_SWAP_FAILURE_REVERSAL
+    }
+}

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CryptoExchange.Net.Interfaces;
 
 namespace Valr.Net.Interfaces.Clients
 {
-    internal interface IValrSocketClient
+    public interface IValrSocketClient : ISocketClient
     {
     }
 }

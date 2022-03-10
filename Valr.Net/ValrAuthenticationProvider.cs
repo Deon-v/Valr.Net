@@ -1,13 +1,9 @@
 ﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Valr.Net
 {
