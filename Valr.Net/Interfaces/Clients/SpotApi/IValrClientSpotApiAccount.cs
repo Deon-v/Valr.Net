@@ -51,5 +51,16 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
         Task<WebCallResult<IEnumerable<AccountTransaction>>> GetAccountHistoryBeforeIdAsync(Guid Id, int limit = 200, long? receiveWindow = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get the max 100 recent trades for a given currency pair for your account
+        /// <para><a href="https://docs.valr.com/#11856958-9461-490e-9e01-4b1f5a2097ae" /></para>
+        /// </summary>
+        /// <param name="currencyPair">The currency pair for which you want to query the trade history</param>
+        /// <param name="limit">Limit the number of items returned. Max: 100</param>
+        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The account information</returns>
+        Task<WebCallResult<IEnumerable<AccountTrade>>> GetRecentTradesByPairAsync(string currencyPair, int limit = 100, long? receiveWindow = null, CancellationToken ct = default);
     }
 }
