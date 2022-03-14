@@ -3,7 +3,7 @@ using Valr.Net.Enums;
 
 namespace Valr.Net.Objects.Models.Spot.ExchangeData
 {
-    public class PairOrderTypes
+    public class ValrPairOrderTypes
     {
         [JsonProperty("currencyPair")]
         public string CurrencyPair { get; set; }
@@ -14,6 +14,6 @@ namespace Valr.Net.Objects.Models.Spot.ExchangeData
 
     public class PairOrderTypesWrapper
     {
-        public PairOrderTypes[] PairOrderTypes { get; set; }
+        public ValrPairOrderTypes[] PairOrderTypes { get; set; }
     }
 }

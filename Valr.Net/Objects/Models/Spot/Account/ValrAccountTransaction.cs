@@ -3,7 +3,7 @@ using Valr.Net.Enums;
 
 namespace Valr.Net.Objects.Models.Spot.Account
 {
-    public class AccountTransaction
+    public class ValrAccountTransaction
     {
         [JsonProperty("transactionType")]
         public Transactiontype TransactionType { get; set; }
@@ -33,13 +33,13 @@ namespace Valr.Net.Objects.Models.Spot.Account
 
     public class AccountTransactionWrapper
     {
-        public AccountTransaction[] Transactions { get; set; }
+        public ValrAccountTransaction[] Transactions { get; set; }
     }
 
     public class Transactiontype
     {
         [JsonProperty("type")]
-        public TransactionType Type { get; set; }
+        public ValrTransactionType Type { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }

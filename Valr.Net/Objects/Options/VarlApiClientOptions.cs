@@ -13,7 +13,7 @@ namespace Valr.Net.Objects.Options
         /// <summary>
         /// Whether to check the trade rules when placing new orders and what to do if the trade isn't valid
         /// </summary>
-        public TradeRulesBehaviour TradeRulesBehaviour { get; set; } = TradeRulesBehaviour.None;
+        public ValrTradeRulesBehaviour TradeRulesBehaviour { get; set; } = ValrTradeRulesBehaviour.None;
         /// <summary>
         /// How often the trade rules should be updated. Only used when TradeRulesBehaviour is not None
         /// </summary>

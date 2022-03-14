@@ -2,7 +2,7 @@
 
 namespace Valr.Net.Objects.Models.Spot.Account
 {
-    public class AccountBalance
+    public class ValrAccountBalance
     {
         [JsonProperty("currency")]
         public string Currency { get; set; }
@@ -18,6 +18,6 @@ namespace Valr.Net.Objects.Models.Spot.Account
 
     public class AccountBalanceWrapper
     {
-        public AccountBalance[] Balances { get; set; }
+        public ValrAccountBalance[] Balances { get; set; }
     }
 }

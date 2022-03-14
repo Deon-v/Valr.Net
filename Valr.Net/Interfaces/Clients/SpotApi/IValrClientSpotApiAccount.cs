@@ -14,7 +14,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
-        Task<WebCallResult<IEnumerable<AccountBalance>>> GetAccountBalancesAsync(long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrAccountBalance>>> GetAccountBalancesAsync(long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the transaction history for the account
@@ -25,7 +25,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
-        Task<WebCallResult<IEnumerable<AccountTransaction>>> GetAccountHistoryAsync(int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetAccountHistoryAsync(int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the transaction history for the account using filters
@@ -40,7 +40,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
-        Task<WebCallResult<IEnumerable<AccountTransaction>>> GetAccountHistoryFilteredAsync(TransactionType[] transactionTypes, DateTime startTime, DateTime endTime, string? currency = null, int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetAccountHistoryFilteredAsync(ValrTransactionType[] transactionTypes, DateTime startTime, DateTime endTime, string? currency = null, int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the transaction that occurred before the given transaction Id
@@ -51,7 +51,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
-        Task<WebCallResult<IEnumerable<AccountTransaction>>> GetAccountHistoryBeforeIdAsync(Guid Id, int limit = 200, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetAccountHistoryBeforeIdAsync(Guid Id, int limit = 200, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the max 100 recent trades for a given currency pair for your account

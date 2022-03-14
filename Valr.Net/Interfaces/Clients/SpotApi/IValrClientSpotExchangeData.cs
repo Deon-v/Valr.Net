@@ -67,7 +67,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
-        Task<WebCallResult<IEnumerable<MarketSummary>>> GetMarketSummariesAsync(long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrMarketSummary>>> GetMarketSummariesAsync(long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the market summary for a given currency pair
@@ -77,16 +77,17 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
-        Task<WebCallResult<MarketSummary>> GetMarketSummaryForPairAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<ValrMarketSummary>> GetMarketSummaryForPairAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get all the order types supported for all currency pairs
         /// <para><a href="https://docs.valr.com/#700eddaa-60ba-4872-ae2b-577c3285d695" /></para>
         /// </summary>
+        /// <param name="currencyPair">The currency pair for which you want to query the allowed order types</param>
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
-        Task<WebCallResult<IEnumerable<PairOrderTypes>>> GetOrderTypesByPairAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrPairOrderTypes>>> GetOrderTypesByPairAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get a list of currencies supported by VALR
@@ -105,5 +106,45 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
         Task<WebCallResult<IEnumerable<ValrSymbol>>> GetSupportedPairsAsync(long? receiveWindow = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get aggregated order book of the top 40 bids and asks for the symbol pair
+        /// <para><a href="https://docs.valr.com/#720fec1b-a1f6-486a-b04a-7ae76c6f9f66" /></para>
+        /// </summary>
+        /// <param name="currencyPair">The currency pair for which you want to order book</param>
+        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The account information</returns>
+        Task<WebCallResult<ValrOrderBook>> GetPublicOrderBookAggregatedAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get full order book for the symbol pair
+        /// <para><a href="https://docs.valr.com/#9ee254bd-4361-40e8-95a1-f57e74968f24" /></para>
+        /// </summary>
+        /// <param name="currencyPair">The currency pair for which you want to order book</param>
+        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The account information</returns>
+        Task<WebCallResult<ValrOrderBook>> GetPublicOrderBookFullAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get aggregated order book of the top 40 bids and asks for the symbol pair, requires authentication and uses more constrained rate-limiting rules 
+        /// <para><a href="https://docs.valr.com/#720fec1b-a1f6-486a-b04a-7ae76c6f9f66" /></para>
+        /// </summary>
+        /// <param name="currencyPair">The currency pair for which you want to order book</param>
+        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The account information</returns>
+        Task<WebCallResult<ValrOrderBook>> GetAuthenticatedOrderBookAggregatedAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get full order book for the symbol pair, requires authentication and uses more constrained rate-limiting rules
+        /// <para><a href="https://docs.valr.com/#9ee254bd-4361-40e8-95a1-f57e74968f24" /></para>
+        /// </summary>
+        /// <param name="currencyPair">The currency pair for which you want to order book</param>
+        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The account information</returns>
+        Task<WebCallResult<ValrOrderBook>> GetAuthenticatedOrderBookFullAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default);
     }
 }

@@ -18,10 +18,10 @@ namespace Valr.Net.Objects.Models.Spot.ExchangeData
         public DateTime TradeTime { get; set; }
 
         [JsonProperty("side")]
-        public OrderSide Side { get; set; }
+        public ValrOrderSide Side { get; set; }
 
         [JsonProperty("takerSide")]
-        private OrderSide TakerSide
+        private ValrOrderSide TakerSide
         {
             set
             {

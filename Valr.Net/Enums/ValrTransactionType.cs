@@ -1,6 +1,6 @@
 ﻿namespace Valr.Net.Enums
 {
-    public enum TransactionType
+    public enum ValrTransactionType
     {
         LIMIT_BUY,
         LIMIT_SELL,

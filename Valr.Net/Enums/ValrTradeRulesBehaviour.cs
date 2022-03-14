@@ -1,6 +1,6 @@
 ﻿namespace Valr.Net.Enums
 {
-    public enum TradeRulesBehaviour
+    public enum ValrTradeRulesBehaviour
     {
         /// <summary>
         /// None

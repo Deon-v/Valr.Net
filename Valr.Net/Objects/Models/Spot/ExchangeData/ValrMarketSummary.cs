@@ -2,7 +2,7 @@
 
 namespace Valr.Net.Objects.Models.Spot.ExchangeData
 {
-    public class MarketSummary
+    public class ValrMarketSummary
     {
         [JsonProperty("currencyPair")]
         public string CurrencyPair { get; set; }
@@ -37,6 +37,6 @@ namespace Valr.Net.Objects.Models.Spot.ExchangeData
 
     public class MarketSummaryWrapper
     {
-        public MarketSummary[] MarketSummaries { get; set; }
+        public ValrMarketSummary[] MarketSummaries { get; set; }
     }
 }

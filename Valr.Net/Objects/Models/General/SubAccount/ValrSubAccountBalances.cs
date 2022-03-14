@@ -10,7 +10,7 @@ namespace Valr.Net.Objects.Models.General.SubAccount
     public class Accounts
     {
         public ValrSubAccount account { get; set; }
-        public AccountBalance[] balances { get; set; }
+        public ValrAccountBalance[] balances { get; set; }
     }
 
 }

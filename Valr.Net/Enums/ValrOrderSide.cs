@@ -2,7 +2,7 @@
 
 namespace Valr.Net.Enums
 {
-    public enum OrderSide
+    public enum ValrOrderSide
     {
         [JsonProperty("buy")]
         Buy,
