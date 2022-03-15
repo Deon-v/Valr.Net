@@ -12,7 +12,9 @@ namespace Valr.Net.Objects.Models.Spot.Account
         public decimal Reserved { get; set; }
         [JsonProperty("total")]
         public decimal Total { get; set; }
-        public DateTime updatedAt { get; set; }
+
+        [JsonProperty("updatedAt")]
+        public DateTime UpdatedAt { get; set; }
     }
 
 

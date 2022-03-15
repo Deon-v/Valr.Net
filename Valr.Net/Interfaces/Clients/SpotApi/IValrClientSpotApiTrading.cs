@@ -1,6 +1,8 @@
 ﻿namespace Valr.Net.Interfaces.Clients.SpotApi
 {
-    internal interface IValrClientSpotApiTrading
+    public interface IValrClientSpotApiTrading
     {
+
+
     }
 }

@@ -3,9 +3,9 @@ using Valr.Net.Enums;
 using Valr.Net.Objects.Models.Spot.Account;
 using Valr.Net.Objects.Models.Spot.ExchangeData;
 
-namespace Valr.Net.Interfaces.Clients.SpotApi
+namespace Valr.Net.Interfaces.Clients.GeneralApi
 {
-    public interface IValrClientSpotApiAccount
+    public interface IValrClientGeneralApiAccount
     {
         /// <summary>
         /// Gets account balances
@@ -63,5 +63,8 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="ct">Cancellation token</param>
         /// <returns>The account information</returns>
         Task<WebCallResult<IEnumerable<ValrTrade>>> GetRecentTradesByPairAsync(string currencyPair, int limit = 100, long? receiveWindow = null, CancellationToken ct = default);
+
+
+
     }
 }

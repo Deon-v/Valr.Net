@@ -1,6 +1,10 @@
 ﻿namespace Valr.Net.Interfaces.Clients.SpotApi
 {
-    internal interface IValrClientSpotApi
+    public interface IValrClientSpotApi
     {
+        /// <summary>
+        /// Endpoints related to requesting data for general exchange data
+        /// </summary>
+        public IValrClientSpotApiTrading Spot { get; }
     }
 }

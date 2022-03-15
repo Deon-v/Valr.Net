@@ -2,9 +2,9 @@
 using Valr.Net.Enums;
 using Valr.Net.Objects.Models.Spot.ExchangeData;
 
-namespace Valr.Net.Interfaces.Clients.SpotApi
+namespace Valr.Net.Interfaces.Clients.GeneralApi
 {
-    public interface IValrClientSpotExchangeData
+    public interface IValrClientGeneralApiExchangeData
     {
         /// <summary>
         /// Gets the status of the Valr Exchange
@@ -129,7 +129,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get aggregated order book of the top 40 bids and asks for the symbol pair, requires authentication and uses more constrained rate-limiting rules 
-        /// <para><a href="https://docs.valr.com/#720fec1b-a1f6-486a-b04a-7ae76c6f9f66" /></para>
+        /// <para><a href="https://docs.valr.com/#926f9245-35d1-4bca-a114-0af07bc229f7" /></para>
         /// </summary>
         /// <param name="currencyPair">The currency pair for which you want to order book</param>
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
@@ -139,7 +139,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get full order book for the symbol pair, requires authentication and uses more constrained rate-limiting rules
-        /// <para><a href="https://docs.valr.com/#9ee254bd-4361-40e8-95a1-f57e74968f24" /></para>
+        /// <para><a href="https://docs.valr.com/#c2acf6b9-dbba-4e6a-9075-a7907360812d" /></para>
         /// </summary>
         /// <param name="currencyPair">The currency pair for which you want to order book</param>
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
