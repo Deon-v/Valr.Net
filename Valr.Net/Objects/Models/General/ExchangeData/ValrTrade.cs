@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Valr.Net.Enums;
 
-namespace Valr.Net.Objects.Models.Spot.ExchangeData
+namespace Valr.Net.Objects.Models.General.ExchangeData
 {
     public class ValrTrade
     {
@@ -17,9 +18,11 @@ namespace Valr.Net.Objects.Models.Spot.ExchangeData
         [JsonProperty("tradedAt")]
         public DateTime TradeTime { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty("side")]
         public ValrOrderSide Side { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty("takerSide")]
         private ValrOrderSide TakerSide
         {

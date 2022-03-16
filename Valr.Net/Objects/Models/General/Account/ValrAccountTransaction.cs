@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Valr.Net.Enums;
 
-namespace Valr.Net.Objects.Models.Spot.Account
+namespace Valr.Net.Objects.Models.General.Account
 {
     public class ValrAccountTransaction
     {

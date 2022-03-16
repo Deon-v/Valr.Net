@@ -1,6 +1,6 @@
 ﻿using CryptoExchange.Net.Objects;
 using Valr.Net.Enums;
-using Valr.Net.Objects.Models.Spot.ExchangeData;
+using Valr.Net.Objects.Models.General.ExchangeData;
 
 namespace Valr.Net.Interfaces.Clients.GeneralApi
 {

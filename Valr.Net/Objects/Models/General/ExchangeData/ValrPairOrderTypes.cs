@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Valr.Net.Enums;
 
-namespace Valr.Net.Objects.Models.Spot.ExchangeData
+namespace Valr.Net.Objects.Models.General.ExchangeData
 {
     public class ValrPairOrderTypes
     {

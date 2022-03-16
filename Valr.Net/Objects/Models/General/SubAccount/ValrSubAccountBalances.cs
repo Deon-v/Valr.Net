@@ -1,4 +1,4 @@
-﻿using Valr.Net.Objects.Models.Spot.Account;
+﻿using Valr.Net.Objects.Models.General.Account;
 
 namespace Valr.Net.Objects.Models.General.SubAccount
 {

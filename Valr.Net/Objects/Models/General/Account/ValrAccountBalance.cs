@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Valr.Net.Objects.Models.Spot.Account
+namespace Valr.Net.Objects.Models.General.Account
 {
     public class ValrAccountBalance
     {

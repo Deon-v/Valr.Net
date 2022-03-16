@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using System.Runtime.Serialization;
 
 namespace Valr.Net.Enums
 {
     public enum ValrStatus
     {
-        [JsonProperty("online")]
+        [EnumMember(Value = "online")]
         Online,
-        [JsonProperty("read-only")]
+        [EnumMember(Value = "read-only")]
         ReadOnly,
-        [JsonProperty("offline")]
+        [EnumMember(Value = "offline")]
         Offline
     }
 }
