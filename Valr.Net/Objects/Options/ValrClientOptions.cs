@@ -25,6 +25,38 @@ namespace Valr.Net.Objects.Options
                     .AddTotalRateLimit( 500, TimeSpan.FromMinutes(1))
             }
         };
+
+        private VarlApiClientOptions _payApiOptions = new VarlApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
+        {
+            AutoTimestamp = true,
+            RateLimiters = new List<IRateLimiter>
+            {
+                new RateLimiter()
+                    .AddApiKeyLimit(500, TimeSpan.FromMinutes(1),true,false)
+                    .AddTotalRateLimit( 500, TimeSpan.FromMinutes(1))
+            }
+        };
+
+        private VarlApiClientOptions _generalApiOptions = new VarlApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
+        {
+            AutoTimestamp = true,
+            RateLimiters = new List<IRateLimiter>
+            {
+                new RateLimiter()
+                    .AddApiKeyLimit(500, TimeSpan.FromMinutes(1),true,false)
+                    .AddTotalRateLimit( 500, TimeSpan.FromMinutes(1))
+            }
+        };
+
+        /// <summary>
+        /// General API options
+        /// </summary>
+        public VarlApiClientOptions GeneralApiOptions
+        {
+            get => _generalApiOptions;
+            set => _generalApiOptions = new VarlApiClientOptions(_generalApiOptions, value);
+        }
+
         /// <summary>
         /// Spot API options
         /// </summary>
@@ -33,6 +65,16 @@ namespace Valr.Net.Objects.Options
             get => _spotApiOptions;
             set => _spotApiOptions = new VarlApiClientOptions(_spotApiOptions, value);
         }
+
+        /// <summary>
+        /// Pay API options
+        /// </summary>
+        public VarlApiClientOptions PayApiOptions
+        {
+            get => _payApiOptions;
+            set => _payApiOptions = new VarlApiClientOptions(_payApiOptions, value);
+        }
+
         /// <summary>
         /// ctor
         /// </summary>
@@ -52,6 +94,8 @@ namespace Valr.Net.Objects.Options
             ReceiveWindow = baseOn.ReceiveWindow;
 
             _spotApiOptions = new VarlApiClientOptions(baseOn.SpotApiOptions, null);
+            _payApiOptions = new VarlApiClientOptions(baseOn.PayApiOptions, null);
+            _generalApiOptions = new VarlApiClientOptions(baseOn.GeneralApiOptions, null);
         }
     }
 }

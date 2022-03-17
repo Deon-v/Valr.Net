@@ -5,6 +5,7 @@ namespace Valr.Net.Enums;
 public enum ValrOrderStatus
 {
     Open,
+    New,
     Active,
     [EnumMember(Value = "Partially Filled")]
     PartiallyFilled,

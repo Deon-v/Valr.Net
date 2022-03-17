@@ -4,12 +4,12 @@ using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
 using Valr.Net.Clients.SpotApi;
-using Valr.Net.Interfaces.Clients.GeneralApi;
+using Valr.Net.Interfaces.Clients.PayApi;
 using Valr.Net.Objects.Options;
 
-namespace Valr.Net.Clients.GeneralApi
+namespace Valr.Net.Clients.PayApi
 {
-    public class ValrClientGeneralApi : RestApiClient, IValrClientGeneralApi
+    public class ValrClientPayApi : RestApiClient, IValrClientPayApi
     {
         #region fields
         private readonly Log _log;
@@ -19,31 +19,18 @@ namespace Valr.Net.Clients.GeneralApi
 
         #region Api clients
         /// <inheritdoc />
-        public IValrClientGeneralApiExchangeData ExchangeData { get; }
-
-        /// <inheritdoc />
-        public IValrClientGeneralApiAccount Account { get; }
-
-        /// <inheritdoc />
-        public IValrClientGeneralApiWallet Wallet { get; }
-
-        /// <inheritdoc />
-        public IValrClientGeneralApiSubAccount SubAccount { get; }
+        public IValrClientPayApiValrPay VarlPay { get; }
         #endregion
 
         #region constructor/destructor
-        public ValrClientGeneralApi(Log log, ValrClient baseClient, ValrClientOptions options) : base(options, options.SpotApiOptions)
+        public ValrClientPayApi(Log log, ValrClient baseClient, ValrClientOptions options) : base(options, options.PayApiOptions)
         {
             Options = options;
             _baseClient = baseClient;
             _log = log;
 
-            ExchangeData = new ValrClientGeneralApiExchangeData(log, this);
-            Account = new ValrClientGeneralApiAccount(log, this);
-            Wallet = new ValrClientGeneralApiWallet(log, this);
-            SubAccount = new ValrClientGeneralApiSubAccount(log, this);
+            VarlPay = new ValrClientPayApiValrPay(log, this);
         }
-
         #endregion
 
         internal Uri GetUrl(string endpoint, string api, string? version = null)
@@ -70,7 +57,7 @@ namespace Valr.Net.Clients.GeneralApi
         }
 
         protected override TimeSyncInfo GetTimeSyncInfo() =>
-         new TimeSyncInfo(_log, Options.SpotApiOptions.AutoTimestamp, Options.SpotApiOptions.TimestampRecalculationInterval, ValrClientSpotApi.TimeSyncState);
+            new TimeSyncInfo(_log, Options.SpotApiOptions.AutoTimestamp, Options.SpotApiOptions.TimestampRecalculationInterval, ValrClientSpotApi.TimeSyncState);
 
         public override TimeSpan GetTimeOffset() => ValrClientSpotApi.TimeSyncState.TimeOffset;
 
@@ -79,7 +66,5 @@ namespace Valr.Net.Clients.GeneralApi
 
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
             => new ValrAuthenticationProvider(credentials);
-
-
     }
 }
