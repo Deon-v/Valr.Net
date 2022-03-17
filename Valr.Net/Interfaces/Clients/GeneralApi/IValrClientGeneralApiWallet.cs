@@ -12,7 +12,7 @@ public interface IValrClientGeneralApiWallet
     /// <param name="currencyCode">The currency code for which you want to query the deposit address</param>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
+    /// <returns>An address that can receive deposits</returns>
     Task<WebCallResult<IEnumerable<ValrWalletAddress>>> GetDepositAddressAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default);
 
     /// <summary>
@@ -21,7 +21,7 @@ public interface IValrClientGeneralApiWallet
     /// </summary>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
+    /// <returns>A collection of address that can be withdrawn to</returns>
     Task<WebCallResult<IEnumerable<ValrWhitelistedAddress>>> GetWhitelistedWithdrawalAddressAsync(long? receiveWindow = null, CancellationToken ct = default);
 
     /// <summary>
@@ -31,9 +31,8 @@ public interface IValrClientGeneralApiWallet
     /// <param name="currencyCode">The currency code for which you want to query the whitelisted address</param>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
+    /// <returns>A collection of address that can be withdrawn to</returns>
     Task<WebCallResult<IEnumerable<ValrWhitelistedAddress>>> GetWhitelistedWithdrawalAddressAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default);
-
 
     /// <summary>
     /// Get all the information about withdrawing the given currency from your VALR account
@@ -42,8 +41,8 @@ public interface IValrClientGeneralApiWallet
     /// <param name="currencyCode">This is the currency code of the currency you want  withdrawal information about</param>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
-    Task<WebCallResult<ValrWithdrawalInfo>> GetWithdrawlInfoAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default);
+    /// <returns>The information and costs to withdraw a currency</returns>
+    Task<WebCallResult<ValrWithdrawalInfo>> GetWithdrawalInfoAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default);
 
     /// <summary>
     /// Withdraw crypto currency funds to an address
@@ -53,7 +52,7 @@ public interface IValrClientGeneralApiWallet
     /// <param name="paymentReference">Only applicable for withdrawals that require a destination tag or equivalent</param>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
+    /// <returns>An id associated with the withdrawal</returns>
     Task<WebCallResult<ValrWithdrawalId>> GetDoWithdrawalAsync(string currencyCode, string? paymentReference = null, long? receiveWindow = null, CancellationToken ct = default);
 
     /// <summary>
@@ -64,7 +63,7 @@ public interface IValrClientGeneralApiWallet
     /// <param name="Id">The unique id that represents your withdrawal request</param>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
+    /// <returns>The status of the withdrawal</returns>
     Task<WebCallResult<ValrWithdrawalStatusInfo>> GetWithdrawalStatusAsync(string currencyCode, Guid Id, long? receiveWindow = null, CancellationToken ct = default);
 
     /// <summary>
@@ -76,7 +75,7 @@ public interface IValrClientGeneralApiWallet
     /// <param name="limit">Limit the number of items returned.</param>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
+    /// <returns>A collection of withdrawals</returns>
     Task<WebCallResult<IEnumerable<ValrWithdrawalStatusInfo>>> GetWithdrawalHistoryAsync(string currencyCode, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default);
 
     /// <summary>
@@ -88,7 +87,7 @@ public interface IValrClientGeneralApiWallet
     /// <param name="limit">Limit the number of items returned.</param>
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
-    /// <returns>The account information</returns>
+    /// <returns>A collection of deposits</returns>
     Task<WebCallResult<IEnumerable<ValrDepositStatusInfo>>> GetDepositHistoryAsync(string currencyCode, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default);
 
 }

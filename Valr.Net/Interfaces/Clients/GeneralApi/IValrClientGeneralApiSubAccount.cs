@@ -26,9 +26,8 @@ namespace Valr.Net.Interfaces.Clients.GeneralApi
         /// <para><a href="https://docs.valr.com/#ee3e19d6-a530-441d-aaf6-a526d368ff82" /></para>
         /// </summary>
         /// <param name="label">The label the sub account will be given. Should not contain special characters</param>
-        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
+        /// <returns>The label for the sub account</returns>
         Task<WebCallResult<ValrSubAccountCreated>> CreateSubAccountAsync(string label, CancellationToken ct = default);
 
         /// <summary>
