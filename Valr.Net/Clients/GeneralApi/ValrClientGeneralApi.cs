@@ -2,7 +2,7 @@
 
 namespace Valr.Net.Clients.GeneralApi
 {
-    public class ValrClientGeneralApi : IValrClientGeneralApi
+    public class ValrClientGeneralApi : IValrClientPayApi
     {
         private bool disposedValue;
 

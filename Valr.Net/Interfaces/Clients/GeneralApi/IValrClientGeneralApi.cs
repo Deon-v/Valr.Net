@@ -1,6 +1,6 @@
 ﻿namespace Valr.Net.Interfaces.Clients.GeneralApi
 {
-    public interface IValrClientGeneralApi : IDisposable
+    public interface IValrClientPayApi : IDisposable
     {
         /// <summary>
         /// Endpoints related to requesting data for general exchange data
