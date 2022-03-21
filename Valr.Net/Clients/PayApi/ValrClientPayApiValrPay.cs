@@ -1,5 +1,7 @@
-﻿using CryptoExchange.Net.Logging;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Valr.Net.Enpoints.PayApi;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.PayApi;
 using Valr.Net.Objects.Models.Pay;
@@ -17,34 +19,69 @@ namespace Valr.Net.Clients.PayApi
             _baseClient = valrClientPayApi;
         }
 
-        public Task<WebCallResult<ValrPaymentResponse>> CreatePaymentAsync(ValrPaymentIdentifierType paymentIdentifierType, string recipientAccountId, string currency, decimal amount, string recipientNote, string senderNote, bool anonymous = false, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPaymentResponse>> CreatePaymentAsync(ValrPaymentIdentifierType paymentIdentifierType, string recipientAccountId, string currency, decimal amount, string recipientNote, string senderNote, bool anonymous = false, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>()
+            {
+                { "amount", amount },
+                { "currency", currency },
+                { "anonymous", anonymous }
+            };
+
+            switch (paymentIdentifierType)
+            {
+                case ValrPaymentIdentifierType.CellNumber:
+                    {
+                        parameters.AddParameter("recipientCellNumber", recipientAccountId);
+                        break;
+                    }
+
+                case ValrPaymentIdentifierType.Email:
+                    {
+                        parameters.AddParameter("recipientEmail", recipientAccountId);
+                        break;
+                    }
+
+                case ValrPaymentIdentifierType.PayId:
+                    {
+                        parameters.AddParameter("recipientPayId", recipientAccountId);
+                        break;
+                    }
+            }
+
+            parameters.AddOptionalParameter("recipientNote", recipientNote);
+            parameters.AddOptionalParameter("senderNote", recipientNote);
+
+
+            var result = await _baseClient.SendRequestInternal<ValrPaymentResponse>(_baseClient.GetUrl(PayEndpoints.NewPayment), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return result;
         }
 
-        public Task<WebCallResult<ValrPaymentHistoryResponse>> GetPaymentDetailsAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPaymentHistoryResponse>> GetPaymentDetailsAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ValrPaymentHistoryResponse>(_baseClient.GetUrl(PayEndpoints.PaymentDetails.Replace(":identifier", id.ToString())),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ICollection<ValrPaymentHistoryResponse>>> GetPaymentHistoryAsync(ValrPaymentStatus[]? status = null, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ICollection<ValrPaymentHistoryResponse>>> GetPaymentHistoryAsync(ValrPaymentStatus[]? status = null, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ICollection<ValrPaymentHistoryResponse>>(_baseClient.GetUrl(PayEndpoints.PaymentHistory), HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrPaymentIdResponse>> GetPaymentIdAsync(long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPaymentIdResponse>> GetPaymentIdAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ValrPaymentIdResponse>(_baseClient.GetUrl(PayEndpoints.PayId), HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrPaymentLimitResponse>> GetPaymentLimitsAsync(long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPaymentLimitResponse>> GetPaymentLimitsAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ValrPaymentLimitResponse>(_baseClient.GetUrl(PayEndpoints.PaymentLimit), HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrPaymentStatusResponse>> GetPaymentStatusAsync(string transactionId, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPaymentStatusResponse>> GetPaymentStatusAsync(string transactionId, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ValrPaymentStatusResponse>(_baseClient.GetUrl(PayEndpoints.PaymentStatus.Replace(":transactionId", transactionId)),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
     }
 }

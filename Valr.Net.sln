@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valr.Net", "Valr.Net\Valr.Net.csproj", "{30462123-075C-4C0C-AE47-CFC9BF93934D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valr.Net", "Valr.Net\Valr.Net.csproj", "{30462123-075C-4C0C-AE47-CFC9BF93934D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valr.Net.UnitTests", "Valr.Net.UnitTests\Valr.Net.UnitTests.csproj", "{15ABC59B-C73B-4376-8CB5-A554EE598CEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{30462123-075C-4C0C-AE47-CFC9BF93934D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30462123-075C-4C0C-AE47-CFC9BF93934D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30462123-075C-4C0C-AE47-CFC9BF93934D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15ABC59B-C73B-4376-8CB5-A554EE598CEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15ABC59B-C73B-4376-8CB5-A554EE598CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15ABC59B-C73B-4376-8CB5-A554EE598CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15ABC59B-C73B-4376-8CB5-A554EE598CEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

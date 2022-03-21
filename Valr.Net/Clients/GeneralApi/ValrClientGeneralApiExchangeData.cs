@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Valr.Net.Enpoints.GeneralApi;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.GeneralApi;
 using Valr.Net.Objects.Models.General.ExchangeData;
@@ -52,9 +53,10 @@ namespace Valr.Net.Clients.GeneralApi
             throw new NotImplementedException();
         }
 
-        public Task<WebCallResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var result = await _baseClient.SendRequestInternal<ValrCheckTime>(_baseClient.GetUrl(ExchangeDataEndpoints.ServerTime), HttpMethod.Get, ct, signed: false).ConfigureAwait(false);
+            return result.As(result.Data?.time ?? default);
         }
 
         public Task<WebCallResult<IEnumerable<ValrCurrency>>> GetSupportedCurrenciesAsync(long? receiveWindow = null, CancellationToken ct = default)

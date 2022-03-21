@@ -7,14 +7,17 @@ using System.Text;
 
 namespace Valr.Net
 {
-    internal class ValrAuthenticationProvider : AuthenticationProvider
+    public class ValrAuthenticationProvider : AuthenticationProvider
     {
         private readonly HMACSHA512 encryptor;
+        private readonly string testTimeStamp;
 
-        public ValrAuthenticationProvider(ApiCredentials credentials) : base(credentials)
+        public ValrAuthenticationProvider(ApiCredentials credentials, string? timeStamp = null) : base(credentials)
         {
             if (credentials.Secret is null || credentials.Key is null)
                 throw new ArgumentException("No valid API credentials provided. Key/Secret needed.");
+
+            testTimeStamp = timeStamp;
 
             encryptor = new HMACSHA512(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
@@ -26,17 +29,17 @@ namespace Valr.Net
         {
             uriParameters = parameterPosition == HttpMethodParameterPosition.InUri ? new SortedDictionary<string, object>(providedParameters) : new SortedDictionary<string, object>();
             bodyParameters = parameterPosition == HttpMethodParameterPosition.InBody ? new SortedDictionary<string, object>(providedParameters) : new SortedDictionary<string, object>();
-            headers = new Dictionary<string, string>() { { "X-VALR-API-KEY", Credentials.Key.GetString() } };
+            headers = new Dictionary<string, string>();
 
             if (!auth)
                 return;
 
-            var parameters = parameterPosition == HttpMethodParameterPosition.InUri ? uriParameters : bodyParameters;
+            var timestamp = string.IsNullOrEmpty(testTimeStamp) ? GetTimestamp() : testTimeStamp;
 
-            var timestamp = GetMillisecondTimestamp(apiClient);
-            parameters.Add("X-VALR-TIMESTAMP", timestamp);
-            uri = uri.SetParameters(uriParameters, arraySerialization);
-            parameters.Add("X-VALR-SIGNATURE", SignRequest(Credentials.Secret.ToString(), timestamp, method.Method, uri.PathAndQuery, JsonConvert.SerializeObject(parameters)));
+            headers.Add("X-VALR-API-KEY", Credentials.Key.GetString());
+            headers.Add("X-VALR-SIGNATURE", SignRequest(Credentials.Secret.GetString(), timestamp, method.Method, uri.PathAndQuery,
+                providedParameters));
+            headers.Add("X-VALR-TIMESTAMP", timestamp);
         }
 
         private string GetTimestamp()
@@ -44,11 +47,17 @@ namespace Valr.Net
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }
 
-        private new string SignRequest(string apiKeySecret, string timestamp, string verb, string path, string body)
+        private string SignRequest(string apiKeySecret, string timestamp, string verb, string path, Dictionary<string, object>? body = null)
         {
-            var payload = timestamp + verb.ToUpper() + path + body;
-            byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
+            string b = String.Empty;
 
+            if (body?.Count != 0)
+            {
+                b = JsonConvert.SerializeObject(body);
+            }
+
+            var payload = timestamp + verb.ToUpper() + path + b;
+            byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
 
             using (HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes(apiKeySecret)))
             {
