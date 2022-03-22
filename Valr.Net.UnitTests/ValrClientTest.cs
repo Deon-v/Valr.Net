@@ -59,7 +59,7 @@ namespace Valr.Net.UnitTests
             // arrange
             var authProvider = new ValrAuthenticationProvider(new ApiCredentials(_key, _secret));
             var client = new HttpClient();
-            var request = new Request(new HttpRequestMessage(HttpMethod.Get, "https://test.test-api.com"), client, 1);
+            var request = new Request(new HttpRequestMessage(HttpMethod.Get, "https://test.valr-api.com"), client, 1);
 
             // act
             var headers = new Dictionary<string, string>();
