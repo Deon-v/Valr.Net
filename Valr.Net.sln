@@ -5,7 +5,9 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valr.Net", "Valr.Net\Valr.Net.csproj", "{30462123-075C-4C0C-AE47-CFC9BF93934D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valr.Net.UnitTests", "Valr.Net.UnitTests\Valr.Net.UnitTests.csproj", "{15ABC59B-C73B-4376-8CB5-A554EE598CEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valr.Net.UnitTests", "Valr.Net.UnitTests\Valr.Net.UnitTests.csproj", "{15ABC59B-C73B-4376-8CB5-A554EE598CEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valr.Net.IntegrationTests", "Valr.Net.IntegrationTests\Valr.Net.IntegrationTests.csproj", "{76029859-DA26-43E2-9285-8914D780ACDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{15ABC59B-C73B-4376-8CB5-A554EE598CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15ABC59B-C73B-4376-8CB5-A554EE598CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15ABC59B-C73B-4376-8CB5-A554EE598CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76029859-DA26-43E2-9285-8914D780ACDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76029859-DA26-43E2-9285-8914D780ACDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76029859-DA26-43E2-9285-8914D780ACDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76029859-DA26-43E2-9285-8914D780ACDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

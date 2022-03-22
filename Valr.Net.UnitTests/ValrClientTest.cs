@@ -144,5 +144,23 @@ namespace Valr.Net.UnitTests
                 Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");
             }
         }
+
+        [Test]
+        public async Task CheckQueryParameters()
+        {
+
+
+            // arrange
+            var client = ValrClientHelpers.CreateClient();
+            ValrClientHelpers.SetResponse(client, "[  {    \"price\": \"240000\",    \"quantity\": \"0.19052818\",    \"currencyPair\": \"BTCZAR\",    \"tradedAt\": \"2020-11-30T08:55:29.338087Z\",    \"takerSide\": \"buy\",    \"sequenceId\": 15828,    \"id\": \"b01709e5-31d0-4d15-a5a6-3fd7d18d4e64\",    \"quoteVolume\": \"45726.7632\"  },  {    \"price\": \"240000\",    \"quantity\": \"0.2\",    \"currencyPair\": \"BTCZAR\",    \"tradedAt\": \"2020-11-30T08:54:40.218338Z\",    \"takerSide\": \"buy\",    \"sequenceId\": 15827,    \"id\": \"7401f088-3961-45a4-8b98-0bcc13b18ad8\",    \"quoteVolume\": \"48000\"  },  {    \"price\": \"240000\",    \"quantity\": \"1\",    \"currencyPair\": \"BTCZAR\",    \"tradedAt\": \"2020-11-30T08:54:23.369203Z\",    \"takerSide\": \"buy\",    \"sequenceId\": 15826,    \"id\": \"71862d6c-e632-493e-9428-28a3c5246b32\",    \"quoteVolume\": \"240000\"  },  {    \"price\": \"240000\",    \"quantity\": \"0.8\",    \"currencyPair\": \"BTCZAR\",    \"tradedAt\": \"2020-11-30T08:53:38.088032Z\",    \"takerSide\": \"buy\",    \"sequenceId\": 15825,    \"id\": \"04227cc5-0ce0-4b06-8f24-2d7a21fa88ea\",    \"quoteVolume\": \"192000\"  }]  ");
+
+            // act
+            var result = await client.GeneralApi.ExchangeData.GetTradeHistoryFilteredAsync("BTCZAR", System.DateTime.Now.AddDays(-1),
+                System.DateTime.Now);
+
+            // assert
+            Assert.IsTrue(result.Success);
+
+        }
     }
 }

@@ -122,7 +122,7 @@ namespace Valr.Net.Clients.GeneralApi
             parameters.Add("endTime", endTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
 
             return await _baseClient.SendRequestInternal<IEnumerable<ValrTrade>>(_baseClient.GetUrl(ExchangeDataEndpoints.TradeHistory.Replace(":currencyPair", currencyPair)),
-                HttpMethod.Get, ct, parameters: parameters).ConfigureAwait(false);
+                HttpMethod.Get, ct, parameters: parameters, postPosition :HttpMethodParameterPosition.InUri).ConfigureAwait(false);
         }
     }
 }

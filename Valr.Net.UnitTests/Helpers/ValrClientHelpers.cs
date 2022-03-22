@@ -40,7 +40,7 @@ namespace Valr.Net.UnitTests.Helpers
             return client;
         }
 
-        public static void SetResponse(BaseRestClient client, string responseData)
+        public static void SetResponse(IValrClient client, string responseData)
         {
             var expectedBytes = Encoding.UTF8.GetBytes(responseData);
             var responseStream = new MemoryStream();
