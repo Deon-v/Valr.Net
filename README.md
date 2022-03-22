@@ -5,7 +5,7 @@ Valr.Net is a wrapper for the Varl API as found on [Valr](https://docs.valr.com/
 The library relies on [CryptoExchange.Net](https://github.com/JKorf/CryptoExchange.Net), please support [Jan Korf](https://github.com/JKorf) for all his hard work.
 
 ## Status
-This library is in development and about 10% complete.
+This library is in development and about 20% complete.
 
 ## Donate / Sponsor
 
