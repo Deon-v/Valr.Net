@@ -1,5 +1,7 @@
-﻿using CryptoExchange.Net.Logging;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Valr.Net.Endpoints.GeneralApi;
 using Valr.Net.Interfaces.Clients.GeneralApi;
 using Valr.Net.Objects.Models.General.SubAccount;
 
@@ -16,24 +18,39 @@ namespace Valr.Net.Clients.GeneralApi
             _baseClient = valrClientGeneralApi;
         }
 
-        public Task<WebCallResult<ValrSubAccountCreated>> CreateSubAccountAsync(string label, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrSubAccountCreated>> CreateSubAccountAsync(string label, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("label", label);
+
+            return await _baseClient.SendRequestInternal<ValrSubAccountCreated>(_baseClient.GetUrl(SubAccountEndpoints.Register),
+                HttpMethod.Get, ct, parameters: parameters, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrSubAccountBalances>> GetSubAccountBalancesAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<ValrSubAccountBalances>> GetSubAccountBalancesAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ValrSubAccountBalances>(_baseClient.GetUrl(SubAccountEndpoints.Balances),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<IEnumerable<ValrSubAccount>>> GetSubAccountsAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrSubAccount>>> GetSubAccountsAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrSubAccount>>(_baseClient.GetUrl(SubAccountEndpoints.SubAccounts),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<bool>> GetSubAccountTransferHistoryForSubAccountAsync(string? asset, string fromId, string toId, decimal amount, int? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<bool>> CreateSubAccountTransferAsync(string asset, string fromId, string toId, decimal amount, int? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("fromId", fromId);
+            parameters.AddParameter("toId", toId);
+            parameters.AddParameter("amount", amount);
+            parameters.AddParameter("currencyCode", asset);
+
+            var result = await _baseClient.SendRequestInternal<object>(_baseClient.GetUrl(SubAccountEndpoints.Transfer),
+                HttpMethod.Post, ct, parameters: parameters, signed: true).ConfigureAwait(false);
+
+            return result.As(result.Success);
         }
     }
 }

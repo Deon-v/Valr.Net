@@ -1,5 +1,4 @@
-﻿using CryptoExchange.Net;
-using CryptoExchange.Net.Interfaces;
+﻿using CryptoExchange.Net.Interfaces;
 using Moq;
 using Newtonsoft.Json;
 using System;

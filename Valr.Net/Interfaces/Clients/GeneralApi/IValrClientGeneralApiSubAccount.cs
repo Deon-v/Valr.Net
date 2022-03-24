@@ -41,6 +41,6 @@ namespace Valr.Net.Interfaces.Clients.GeneralApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Transfer history</returns>
-        Task<WebCallResult<bool>> GetSubAccountTransferHistoryForSubAccountAsync(string? asset, string fromId, string toId, decimal amount, int? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<bool>> CreateSubAccountTransferAsync(string asset, string fromId, string toId, decimal amount, int? receiveWindow = null, CancellationToken ct = default);
     }
 }

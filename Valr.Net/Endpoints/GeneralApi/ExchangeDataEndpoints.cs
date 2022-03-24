@@ -1,4 +1,4 @@
-﻿namespace Valr.Net.Enpoints.GeneralApi
+﻿namespace Valr.Net.Endpoints.GeneralApi
 {
     internal static class ExchangeDataEndpoints
     {

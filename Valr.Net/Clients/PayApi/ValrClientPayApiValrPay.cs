@@ -1,7 +1,7 @@
 ﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
-using Valr.Net.Enpoints.PayApi;
+using Valr.Net.Endpoints.PayApi;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.PayApi;
 using Valr.Net.Objects.Models.Pay;

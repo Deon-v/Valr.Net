@@ -1,6 +1,7 @@
-﻿using CryptoExchange.Net.Logging;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
-using Valr.Net.Enpoints.GeneralApi;
+using Valr.Net.Endpoints.GeneralApi;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.GeneralApi;
 using Valr.Net.Objects.Models.General.ExchangeData;
@@ -96,8 +97,8 @@ namespace Valr.Net.Clients.GeneralApi
         public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetTradeHistoryAsync(string currencyPair, int skip = 0, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.Add("skip", skip);
-            parameters.Add("limit", limit);
+            parameters.AddParameter("skip", skip);
+            parameters.AddParameter("limit", limit);
 
             return await _baseClient.SendRequestInternal<IEnumerable<ValrTrade>>(_baseClient.GetUrl(ExchangeDataEndpoints.TradeHistory.Replace(":currencyPair", currencyPair)),
                 HttpMethod.Get, ct, parameters: parameters).ConfigureAwait(false);
@@ -106,8 +107,8 @@ namespace Valr.Net.Clients.GeneralApi
         public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetTradeHistoryBeforeIdAsync(string currencyPair, Guid id, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.Add("limit", limit);
-            parameters.Add("beforeId", id);
+            parameters.AddParameter("limit", limit);
+            parameters.AddParameter("beforeId", id);
 
             return await _baseClient.SendRequestInternal<IEnumerable<ValrTrade>>(_baseClient.GetUrl(ExchangeDataEndpoints.TradeHistory.Replace(":currencyPair", currencyPair)),
                 HttpMethod.Get, ct, parameters: parameters).ConfigureAwait(false);
@@ -116,13 +117,13 @@ namespace Valr.Net.Clients.GeneralApi
         public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetTradeHistoryFilteredAsync(string currencyPair, DateTime startTime, DateTime endTime, int skip = 0, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.Add("skip", skip);
-            parameters.Add("limit", limit);
-            parameters.Add("startTime", startTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
-            parameters.Add("endTime", endTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            parameters.AddParameter("skip", skip);
+            parameters.AddParameter("limit", limit);
+            parameters.AddParameter("startTime", startTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            parameters.AddParameter("endTime", endTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
 
             return await _baseClient.SendRequestInternal<IEnumerable<ValrTrade>>(_baseClient.GetUrl(ExchangeDataEndpoints.TradeHistory.Replace(":currencyPair", currencyPair)),
-                HttpMethod.Get, ct, parameters: parameters, postPosition :HttpMethodParameterPosition.InUri).ConfigureAwait(false);
+                HttpMethod.Get, ct, parameters: parameters).ConfigureAwait(false);
         }
     }
 }

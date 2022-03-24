@@ -53,7 +53,7 @@ public interface IValrClientGeneralApiWallet
     /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns>An id associated with the withdrawal</returns>
-    Task<WebCallResult<ValrWithdrawalId>> GetDoWithdrawalAsync(string currencyCode, string? paymentReference = null, long? receiveWindow = null, CancellationToken ct = default);
+    Task<WebCallResult<ValrWithdrawalId>> DoWithdrawalAsync(string currencyCode, decimal amount, string address, string? paymentReference = null, long? receiveWindow = null, CancellationToken ct = default);
 
     /// <summary>
     /// Check the status of a withdrawal

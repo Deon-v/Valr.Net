@@ -1,4 +1,4 @@
-﻿namespace Valr.Net.Enpoints.PayApi
+﻿namespace Valr.Net.Endpoints.PayApi
 {
     internal static class PayEndpoints
     {

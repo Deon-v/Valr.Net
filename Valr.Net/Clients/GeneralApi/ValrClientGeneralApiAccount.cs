@@ -1,5 +1,7 @@
-﻿using CryptoExchange.Net.Logging;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Valr.Net.Endpoints.GeneralApi;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.GeneralApi;
 using Valr.Net.Objects.Models.General.Account;
@@ -18,29 +20,54 @@ namespace Valr.Net.Clients.GeneralApi
             _baseClient = valrClientGeneralApi;
         }
 
-        public Task<WebCallResult<IEnumerable<ValrAccountBalance>>> GetAccountBalancesAsync(long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrAccountBalance>>> GetAccountBalancesAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrAccountBalance>>(_baseClient.GetUrl(AccountEndpoints.Balances),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetAccountHistoryAsync(int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetTransactionHistoryAsync(int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("skip", skip);
+            parameters.AddParameter("limit", limit);
+
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrAccountTransaction>>(_baseClient.GetUrl(AccountEndpoints.TransactionHistory),
+                HttpMethod.Get, ct, signed: true, parameters: parameters).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetAccountHistoryBeforeIdAsync(Guid Id, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetTransactionHistoryBeforeIdAsync(Guid id, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("limit", limit);
+            parameters.AddParameter("beforeId", id);
+
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrAccountTransaction>>(_baseClient.GetUrl(AccountEndpoints.TransactionHistory),
+                HttpMethod.Get, ct, signed: true, parameters: parameters).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetAccountHistoryFilteredAsync(ValrTransactionType[] transactionTypes, DateTime startTime, DateTime endTime, string? currency = null, int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetTransactionHistoryFilteredAsync(ValrTransactionType[] transactionTypes, DateTime startTime, DateTime endTime, string? currency = null, int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("transactionTypes", string.Join(",", transactionTypes));
+            parameters.AddParameter("skip", skip);
+            parameters.AddParameter("limit", limit);
+            parameters.AddParameter("startTime", startTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            parameters.AddParameter("endTime", endTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            parameters.AddOptionalParameter("currency", currency);
+
+            //transactionTypes
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrAccountTransaction>>(_baseClient.GetUrl(AccountEndpoints.TransactionHistory),
+                HttpMethod.Get, ct, signed: true, parameters: parameters).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<IEnumerable<ValrTrade>>> GetRecentTradesByPairAsync(string currencyPair, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetRecentTradesByPairAsync(string currencyPair, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("limit", limit);
+
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrTrade>>(_baseClient.GetUrl(AccountEndpoints.TradeHistory.Replace(":currencyPair", currencyPair)),
+                HttpMethod.Get, ct, signed: true, parameters: parameters).ConfigureAwait(false);
         }
     }
 }

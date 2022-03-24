@@ -1,5 +1,7 @@
-﻿using CryptoExchange.Net.Logging;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Valr.Net.Endpoints.GeneralApi;
 using Valr.Net.Interfaces.Clients.GeneralApi;
 using Valr.Net.Objects.Models.General.Wallet;
 
@@ -16,43 +18,67 @@ public class ValrClientGeneralApiWallet : IValrClientGeneralApiWallet
         _baseClient = valrClientGeneralApi;
     }
 
-    public Task<WebCallResult<IEnumerable<ValrWalletAddress>>> GetDepositAddressAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<IEnumerable<ValrWalletAddress>>> GetDepositAddressAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return await _baseClient.SendRequestInternal<IEnumerable<ValrWalletAddress>>(_baseClient.GetUrl(CryptoWalletEndpoints.DepositAddress.Replace(":currencyCode", currencyCode)),
+            HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
     }
 
-    public Task<WebCallResult<IEnumerable<ValrDepositStatusInfo>>> GetDepositHistoryAsync(string currencyCode, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<IEnumerable<ValrDepositStatusInfo>>> GetDepositHistoryAsync(string currencyCode, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var parameters = new Dictionary<string, object>();
+        parameters.AddParameter("skip", skip);
+        parameters.AddParameter("limit", limit);
+
+        return await _baseClient.SendRequestInternal<IEnumerable<ValrDepositStatusInfo>>(_baseClient.GetUrl(CryptoWalletEndpoints.DepositHistory.Replace(":currencyCode", currencyCode)),
+            HttpMethod.Get, ct, parameters: parameters, signed: true).ConfigureAwait(false);
     }
 
-    public Task<WebCallResult<ValrWithdrawalId>> GetDoWithdrawalAsync(string currencyCode, string? paymentReference = null, long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<ValrWithdrawalId>> DoWithdrawalAsync(string currencyCode, decimal amount, string address, string? paymentReference = null, long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var parameters = new Dictionary<string, object>();
+        parameters.AddParameter("amount", amount);
+        parameters.AddParameter("address", address);
+        parameters.AddOptionalParameter("paymentReference", paymentReference);
+
+        return await _baseClient.SendRequestInternal<ValrWithdrawalId>(_baseClient.GetUrl(CryptoWalletEndpoints.WithdrawalHistory.Replace(":currencyCode", currencyCode)),
+            HttpMethod.Post, ct, parameters: parameters, signed: true).ConfigureAwait(false);
     }
 
-    public Task<WebCallResult<IEnumerable<ValrWhitelistedAddress>>> GetWhitelistedWithdrawalAddressAsync(long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<IEnumerable<ValrWhitelistedAddress>>> GetWhitelistedWithdrawalAddressAsync(long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return await _baseClient.SendRequestInternal<IEnumerable<ValrWhitelistedAddress>>(_baseClient.GetUrl(CryptoWalletEndpoints.WhitelistedAddress),
+            HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
     }
 
-    public Task<WebCallResult<IEnumerable<ValrWhitelistedAddress>>> GetWhitelistedWithdrawalAddressAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<IEnumerable<ValrWhitelistedAddress>>> GetWhitelistedWithdrawalAddressAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return await _baseClient.SendRequestInternal<IEnumerable<ValrWhitelistedAddress>>(_baseClient.GetUrl(CryptoWalletEndpoints.WhitelistedAddressCurrency.Replace(":currencyCode", currencyCode)),
+            HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
     }
 
-    public Task<WebCallResult<IEnumerable<ValrWithdrawalStatusInfo>>> GetWithdrawalHistoryAsync(string currencyCode, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<IEnumerable<ValrWithdrawalStatusInfo>>> GetWithdrawalHistoryAsync(string currencyCode, int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var parameters = new Dictionary<string, object>();
+        parameters.AddParameter("skip", skip);
+        parameters.AddParameter("limit", limit);
+
+        return await _baseClient.SendRequestInternal<IEnumerable<ValrWithdrawalStatusInfo>>(_baseClient.GetUrl(CryptoWalletEndpoints.WithdrawalHistory.Replace(":currencyCode", currencyCode)),
+            HttpMethod.Get, ct, parameters: parameters, signed: true).ConfigureAwait(false);
     }
 
-    public Task<WebCallResult<ValrWithdrawalInfo>> GetWithdrawalInfoAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<ValrWithdrawalInfo>> GetWithdrawalInfoAsync(string currencyCode, long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return await _baseClient.SendRequestInternal<ValrWithdrawalInfo>(_baseClient.GetUrl(CryptoWalletEndpoints.Withdrawal.Replace(":currencyCode", currencyCode)),
+            HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
     }
 
-    public Task<WebCallResult<ValrWithdrawalStatusInfo>> GetWithdrawalStatusAsync(string currencyCode, Guid Id, long? receiveWindow = null, CancellationToken ct = default)
+    public async Task<WebCallResult<ValrWithdrawalStatusInfo>> GetWithdrawalStatusAsync(string currencyCode, Guid Id, long? receiveWindow = null, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        string url = CryptoWalletEndpoints.WithdrawalStatus.Replace(":currencyCode", currencyCode)
+            .Replace(":withdrawId", Id.ToString());
+
+        return await _baseClient.SendRequestInternal<ValrWithdrawalStatusInfo>(_baseClient.GetUrl(url),
+            HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
     }
 }
