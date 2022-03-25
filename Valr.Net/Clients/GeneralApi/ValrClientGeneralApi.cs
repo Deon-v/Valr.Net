@@ -5,6 +5,7 @@ using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
 using Valr.Net.Clients.SpotApi;
 using Valr.Net.Interfaces.Clients.GeneralApi;
+using Valr.Net.Interfaces.Clients.GeneralApi.Wallets;
 using Valr.Net.Objects.Options;
 
 namespace Valr.Net.Clients.GeneralApi
@@ -25,7 +26,7 @@ namespace Valr.Net.Clients.GeneralApi
         public IValrClientGeneralApiAccount Account { get; }
 
         /// <inheritdoc />
-        public IValrClientGeneralApiWallet Wallet { get; }
+        public IValrClientGeneralApiWallets Wallet { get; }
 
         /// <inheritdoc />
         public IValrClientGeneralApiSubAccount SubAccount { get; }
@@ -40,7 +41,7 @@ namespace Valr.Net.Clients.GeneralApi
 
             ExchangeData = new ValrClientGeneralApiExchangeData(log, this);
             Account = new ValrClientGeneralApiAccount(log, this);
-            Wallet = new ValrClientGeneralApiWallet(log, this);
+            Wallet = new ValrClientGeneralApiWallets(log, this);
             SubAccount = new ValrClientGeneralApiSubAccount(log, this);
         }
 

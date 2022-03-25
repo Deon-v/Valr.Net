@@ -15,7 +15,7 @@ namespace Valr.Net.Objects.Options
         /// </summary>
         public TimeSpan ReceiveWindow { get; set; } = TimeSpan.FromSeconds(5);
 
-        private VarlApiClientOptions _spotApiOptions = new VarlApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
+        private ValrApiClientOptions _spotApiOptions = new ValrApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
         {
             AutoTimestamp = true,
             RateLimiters = new List<IRateLimiter>
@@ -26,7 +26,7 @@ namespace Valr.Net.Objects.Options
             }
         };
 
-        private VarlApiClientOptions _payApiOptions = new VarlApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
+        private ValrApiClientOptions _payApiOptions = new ValrApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
         {
             AutoTimestamp = true,
             RateLimiters = new List<IRateLimiter>
@@ -37,7 +37,7 @@ namespace Valr.Net.Objects.Options
             }
         };
 
-        private VarlApiClientOptions _generalApiOptions = new VarlApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
+        private ValrApiClientOptions _generalApiOptions = new ValrApiClientOptions(ValrApiAddresses.Default.RestClientAddress)
         {
             AutoTimestamp = true,
             RateLimiters = new List<IRateLimiter>
@@ -51,28 +51,28 @@ namespace Valr.Net.Objects.Options
         /// <summary>
         /// General API options
         /// </summary>
-        public VarlApiClientOptions GeneralApiOptions
+        public ValrApiClientOptions GeneralApiOptions
         {
             get => _generalApiOptions;
-            set => _generalApiOptions = new VarlApiClientOptions(_generalApiOptions, value);
+            set => _generalApiOptions = new ValrApiClientOptions(_generalApiOptions, value);
         }
 
         /// <summary>
         /// Spot API options
         /// </summary>
-        public VarlApiClientOptions SpotApiOptions
+        public ValrApiClientOptions SpotApiOptions
         {
             get => _spotApiOptions;
-            set => _spotApiOptions = new VarlApiClientOptions(_spotApiOptions, value);
+            set => _spotApiOptions = new ValrApiClientOptions(_spotApiOptions, value);
         }
 
         /// <summary>
         /// Pay API options
         /// </summary>
-        public VarlApiClientOptions PayApiOptions
+        public ValrApiClientOptions PayApiOptions
         {
             get => _payApiOptions;
-            set => _payApiOptions = new VarlApiClientOptions(_payApiOptions, value);
+            set => _payApiOptions = new ValrApiClientOptions(_payApiOptions, value);
         }
 
         /// <summary>
@@ -93,9 +93,9 @@ namespace Valr.Net.Objects.Options
 
             ReceiveWindow = baseOn.ReceiveWindow;
 
-            _spotApiOptions = new VarlApiClientOptions(baseOn.SpotApiOptions, null);
-            _payApiOptions = new VarlApiClientOptions(baseOn.PayApiOptions, null);
-            _generalApiOptions = new VarlApiClientOptions(baseOn.GeneralApiOptions, null);
+            _spotApiOptions = new ValrApiClientOptions(baseOn.SpotApiOptions, null);
+            _payApiOptions = new ValrApiClientOptions(baseOn.PayApiOptions, null);
+            _generalApiOptions = new ValrApiClientOptions(baseOn.GeneralApiOptions, null);
         }
     }
 }

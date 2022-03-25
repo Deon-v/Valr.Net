@@ -24,7 +24,7 @@ namespace Valr.Net.Clients.GeneralApi
             parameters.AddParameter("label", label);
 
             return await _baseClient.SendRequestInternal<ValrSubAccountCreated>(_baseClient.GetUrl(SubAccountEndpoints.Register),
-                HttpMethod.Get, ct, parameters: parameters, signed: true).ConfigureAwait(false);
+                HttpMethod.Post, ct, parameters: parameters, signed: true).ConfigureAwait(false);
         }
 
         public async Task<WebCallResult<ValrSubAccountBalances>> GetSubAccountBalancesAsync(CancellationToken ct = default)

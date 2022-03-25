@@ -1,4 +1,6 @@
-﻿namespace Valr.Net.Interfaces.Clients.GeneralApi
+﻿using Valr.Net.Interfaces.Clients.GeneralApi.Wallets;
+
+namespace Valr.Net.Interfaces.Clients.GeneralApi
 {
     public interface IValrClientGeneralApi : IDisposable
     {
@@ -15,7 +17,7 @@
         /// <summary>
         /// Endpoints related to requesting data for and controlling wallets
         /// </summary>
-        public IValrClientGeneralApiWallet Wallet { get; }
+        public IValrClientGeneralApiWallets Wallet { get; }
 
         /// <summary>
         /// Endpoints related to requesting data for and controlling sub accounts

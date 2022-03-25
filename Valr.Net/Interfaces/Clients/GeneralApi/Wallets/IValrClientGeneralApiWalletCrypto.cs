@@ -1,9 +1,9 @@
 ﻿using CryptoExchange.Net.Objects;
 using Valr.Net.Objects.Models.General.Wallet;
 
-namespace Valr.Net.Interfaces.Clients.GeneralApi;
+namespace Valr.Net.Interfaces.Clients.GeneralApi.Wallets;
 
-public interface IValrClientGeneralApiWallet
+public interface IValrClientGeneralApiWalletCrypto
 {
     /// <summary>
     /// Returns the default deposit address associated with currency specified

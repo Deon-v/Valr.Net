@@ -3,7 +3,7 @@ using Valr.Net.Enums;
 
 namespace Valr.Net.Objects.Options
 {
-    public class VarlApiClientOptions : RestApiClientOptions
+    public class ValrApiClientOptions : RestApiClientOptions
     {
         /// <summary>
         /// A manual offset for the timestamp. Should only be used if AutoTimestamp and regular time synchronization on the OS is not reliable enough
@@ -22,7 +22,7 @@ namespace Valr.Net.Objects.Options
         /// <summary>
         /// ctor
         /// </summary>
-        public VarlApiClientOptions()
+        public ValrApiClientOptions()
         {
         }
 
@@ -30,7 +30,7 @@ namespace Valr.Net.Objects.Options
         /// ctor
         /// </summary>
         /// <param name="baseAddress"></param>
-        internal VarlApiClientOptions(string baseAddress) : base(baseAddress)
+        internal ValrApiClientOptions(string baseAddress) : base(baseAddress)
         {
         }
 
@@ -39,7 +39,7 @@ namespace Valr.Net.Objects.Options
         /// </summary>
         /// <param name="baseOn"></param>
         /// <param name="newValues"></param>
-        internal VarlApiClientOptions(VarlApiClientOptions baseOn, VarlApiClientOptions? newValues) : base(baseOn, newValues)
+        internal ValrApiClientOptions(ValrApiClientOptions baseOn, ValrApiClientOptions? newValues) : base(baseOn, newValues)
         {
             TimestampOffset = newValues?.TimestampOffset ?? baseOn.TimestampOffset;
             TradeRulesBehaviour = newValues?.TradeRulesBehaviour ?? baseOn.TradeRulesBehaviour;
