@@ -10,14 +10,17 @@ namespace Valr.Net
     public class ValrAuthenticationProvider : AuthenticationProvider
     {
         private readonly HMACSHA512 encryptor;
-        private readonly string testTimeStamp;
+        private readonly string? _testTimeStamp;
+        private readonly string? _subAccountId;
 
-        public ValrAuthenticationProvider(ApiCredentials credentials, string? timeStamp = null) : base(credentials)
+        public ValrAuthenticationProvider(ApiCredentials credentials, string? subAccountId = null, string? timeStamp = null) : base(credentials)
         {
             if (credentials.Secret is null || credentials.Key is null)
                 throw new ArgumentException("No valid API credentials provided. Key/Secret needed.");
 
-            testTimeStamp = timeStamp;
+            _subAccountId = subAccountId;
+            _testTimeStamp = timeStamp;
+
 
             encryptor = new HMACSHA512(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
@@ -34,12 +37,18 @@ namespace Valr.Net
             if (!auth)
                 return;
 
-            var timestamp = string.IsNullOrEmpty(testTimeStamp) ? GetTimestamp() : testTimeStamp;
+            var timestamp = string.IsNullOrEmpty(_testTimeStamp) ? GetTimestamp() : _testTimeStamp;
 
             headers.Add("X-VALR-API-KEY", Credentials.Key.GetString());
-            headers.Add("X-VALR-SIGNATURE", SignRequest(Credentials.Secret.GetString(), timestamp, method.Method, uri.PathAndQuery,
+
+            headers.Add("X-VALR-SIGNATURE", SignRequest(Credentials.Secret.GetString(), timestamp, method.Method, uri.PathAndQuery, _subAccountId,
                 providedParameters));
             headers.Add("X-VALR-TIMESTAMP", timestamp);
+
+            if (!string.IsNullOrEmpty(_subAccountId))
+            {
+                headers.Add("X-VALR-SUB-ACCOUNT-ID", _subAccountId);
+            }
         }
 
         private string GetTimestamp()
@@ -47,7 +56,7 @@ namespace Valr.Net
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }
 
-        private string SignRequest(string apiKeySecret, string timestamp, string verb, string path, Dictionary<string, object>? body = null)
+        private string SignRequest(string apiKeySecret, string timestamp, string verb, string path, string subAccountId, Dictionary<string, object>? body = null)
         {
             string b = String.Empty;
 
@@ -56,7 +65,7 @@ namespace Valr.Net
                 b = JsonConvert.SerializeObject(body);
             }
 
-            var payload = timestamp + verb.ToUpper() + path + b;
+            var payload = timestamp + verb.ToUpper() + path + b + subAccountId;
             byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
 
             using (HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes(apiKeySecret)))

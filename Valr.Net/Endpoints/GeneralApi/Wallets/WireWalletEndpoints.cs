@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Valr.Net.Endpoints.GeneralApi.Wallets
+﻿namespace Valr.Net.Endpoints.GeneralApi.Wallets
 {
     internal static class WireWalletEndpoints
     {

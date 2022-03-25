@@ -1,5 +1,7 @@
-﻿using CryptoExchange.Net.Logging;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Valr.Net.Endpoints.SpotApi;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.SpotApi;
 using Valr.Net.Objects.Models.Spot.InstantTrading;
@@ -17,19 +19,34 @@ namespace Valr.Net.Clients.SpotApi
             _log = log;
         }
 
-        public Task<WebCallResult<ValrInstantTradeStatusResponse>> GetInstantOrderStatusAsync(string symbol, Guid id, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrInstantTradeStatusResponse>> GetInstantOrderStatusAsync(string currencyPair, Guid id, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            string path = InstantTradingEndpoints.OrderStatus.Replace(":orderId", id.ToString())
+                .Replace(":currencyPair", currencyPair);
+            return await _baseClient.SendRequestInternal<ValrInstantTradeStatusResponse>(_baseClient.GetUrl(path),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrInstantTradeQuote>> GetQuoteAsync(string symbol, ValrOrderSide side, decimal quantity, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrInstantTradeQuote>> GetQuoteAsync(string currencyPair, string symbol, ValrOrderSide side, decimal quantity, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("payInCurrency", symbol);
+            parameters.AddParameter("payAmount", quantity);
+            parameters.AddParameter("side", side);
+
+            return await _baseClient.SendRequestInternal<ValrInstantTradeQuote>(_baseClient.GetUrl(InstantTradingEndpoints.Quote.Replace(":currencyPair", currencyPair)),
+                HttpMethod.Post, ct, parameters: parameters, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrInstantTradeResponse>> PlaceInstantOrderAsync(string symbol, ValrOrderSide side, decimal quantity, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrInstantTradeResponse>> PlaceInstantOrderAsync(string currencyPair, string symbol, ValrOrderSide side, decimal quantity, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("payInCurrency", symbol);
+            parameters.AddParameter("payAmount", quantity);
+            parameters.AddParameter("side", side);
+
+            return await _baseClient.SendRequestInternal<ValrInstantTradeResponse>(_baseClient.GetUrl(InstantTradingEndpoints.PlaceOrder.Replace(":currencyPair", currencyPair)),
+                HttpMethod.Post, ct, parameters: parameters, signed: true).ConfigureAwait(false);
         }
     }
 }

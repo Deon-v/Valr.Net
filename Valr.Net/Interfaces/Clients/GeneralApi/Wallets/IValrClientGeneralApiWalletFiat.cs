@@ -1,6 +1,5 @@
 ﻿using CryptoExchange.Net.Objects;
 using Valr.Net.Objects.Models.General.Wallet;
-using Valr.Net.Objects.Options;
 
 namespace Valr.Net.Interfaces.Clients.GeneralApi.Wallets;
 

@@ -54,14 +54,9 @@ namespace Valr.Net.Clients.SpotApi
             => new ValrAuthenticationProvider(credentials);
 
         #region helpers
-        internal Uri GetUrl(string endpoint, string api, string? version = null)
+        internal Uri GetUrl(string endpoint)
         {
-            var result = BaseAddress.AppendPath(api);
-
-            if (!string.IsNullOrEmpty(version))
-                result = result.AppendPath($"v{version}");
-
-            return new Uri(result.AppendPath(endpoint));
+            return new Uri(BaseAddress.AppendPath(endpoint));
         }
 
         internal async Task<WebCallResult<T>> SendRequestInternal<T>(Uri uri, HttpMethod method, CancellationToken cancellationToken,

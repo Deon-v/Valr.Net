@@ -1,5 +1,7 @@
-﻿using CryptoExchange.Net.Logging;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Valr.Net.Endpoints.SpotApi;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.SpotApi;
 using Valr.Net.Objects.Models.Spot.Trading;
@@ -17,69 +19,127 @@ namespace Valr.Net.Clients.SpotApi
             _log = log;
         }
 
-        public Task<WebCallResult> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("orderId", id);
+            parameters.AddParameter("pair", symbol);
+
+            var result = await _baseClient.SendRequestInternal<string>(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
+                HttpMethod.Delete, ct, signed: true, parameters: parameters).ConfigureAwait(false);
+
+            return result.AsDataless();
         }
 
-        public Task<WebCallResult> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("customerOrderId", clientOrderId);
+            parameters.AddParameter("pair", symbol);
+
+            var result = await _baseClient.SendRequestInternal<string>(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
+                HttpMethod.Delete, ct, signed: true, parameters: parameters).ConfigureAwait(false);
+
+            return result.AsDataless();
         }
 
-        public Task<WebCallResult<ICollection<ValrOpenOrderResponse>>> GetOpenOrderAsync(long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ICollection<ValrOpenOrderResponse>>> GetOpenOrderAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ICollection<ValrOpenOrderResponse>>(_baseClient.GetUrl(TradingEndpoints.OpenOrders),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ICollection<ValrOrderDetailResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailId.Replace(":orderId", id.ToString())),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ICollection<ValrOrderDetailResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailCustomId.Replace(":customerOrderId", clientOrderId.ToString())),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ICollection<ValrOrderHistoryResponse>>> GetOrderHistoryAsync(int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ICollection<ValrOrderHistoryResponse>>> GetOrderHistoryAsync(int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ICollection<ValrOrderHistoryResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistory),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrOrderStatusResponse>> GetOrderStatusAsync(string symbol, Guid id, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrOrderStatusResponse>> GetOrderStatusAsync(string symbol, Guid id, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            string path = TradingEndpoints.OrderStatusId.Replace(":orderId", id.ToString()).Replace(":currencyPair", symbol);
+
+            return await _baseClient.SendRequestInternal<ValrOrderStatusResponse>(_baseClient.GetUrl(path),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrOrderStatusResponse>> GetOrderStatusAsync(string symbol, int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrOrderStatusResponse>> GetOrderStatusAsync(string symbol, int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            string path = TradingEndpoints.OrderStatusId.Replace(":customerOrderId", clientOrderId.ToString()).Replace(":currencyPair", symbol);
+
+            return await _baseClient.SendRequestInternal<ValrOrderStatusResponse>(_baseClient.GetUrl(path),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrOrderHistoryResponse>> GetOrderSummaryAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrOrderHistoryResponse>> GetOrderSummaryAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ValrOrderHistoryResponse>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailId.Replace(":orderId", id.ToString())),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrOrderHistoryResponse>> GetOrderSummaryAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrOrderHistoryResponse>> GetOrderSummaryAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await _baseClient.SendRequestInternal<ValrOrderHistoryResponse>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailId.Replace(":customerOrderId", clientOrderId.ToString())),
+                HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrPlaceOrderResponse>> PlaceLimitOrderAsync(string symbol, ValrOrderSide side, decimal quantity, decimal price, bool postOnly = false, ValrTimeInforce timeInForce = ValrTimeInforce.GTC, int? clientOrderId = null, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPlaceOrderResponse>> PlaceLimitOrderAsync(string symbol, ValrOrderSide side, decimal quantity, decimal price, bool postOnly = false, ValrTimeInforce timeInForce = ValrTimeInforce.GTC, int? clientOrderId = null, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("side", side);
+            parameters.AddParameter("quantity", quantity);
+            parameters.AddParameter("price", price);
+            parameters.AddParameter("pair", symbol);
+            parameters.AddOptionalParameter("postOnly", postOnly);
+            parameters.AddOptionalParameter("customerOrderId", symbol);
+            parameters.AddOptionalParameter("timeInForce", timeInForce);
+
+
+            return await _baseClient.SendRequestInternal<ValrPlaceOrderResponse>(_baseClient.GetUrl(TradingEndpoints.LimitOrder), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrPlaceOrderResponse>> PlaceMarketOrderAsync(string symbol, ValrOrderSide side, decimal quantity, int? newClientOrderId = null, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPlaceOrderResponse>> PlaceMarketOrderAsync(string symbol, ValrOrderSide side, decimal quantity, int? newClientOrderId = null, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("side", side);
+            parameters.AddParameter("baseAmount", quantity);
+            parameters.AddParameter("pair", symbol);
+            parameters.AddOptionalParameter("customerOrderId", symbol);
+
+            return await _baseClient.SendRequestInternal<ValrPlaceOrderResponse>(_baseClient.GetUrl(TradingEndpoints.MarketOrder), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
-        public Task<WebCallResult<ValrPlaceOrderResponse>> PlaceStopTakeLimitOrderAsync(string symbol, ValrOrderSide side, decimal quantity, decimal price, decimal stopPrice, ValrOrderType type, ValrTimeInforce timeInForce = ValrTimeInforce.GTC, int? newClientOrderId = null, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<ValrPlaceOrderResponse>> PlaceStopTakeLimitOrderAsync(string symbol, ValrOrderSide side, decimal quantity, decimal price, decimal stopPrice, ValrOrderType type, ValrTimeInforce timeInForce = ValrTimeInforce.GTC, int? newClientOrderId = null, long? receiveWindow = null, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            if (type is not ValrOrderType.TAKE_PROFIT_LIMIT or ValrOrderType.STOP_LOSS_LIMIT)
+            {
+                throw new ArgumentException($"Order type {type} not allowed", nameof(type));
+            }
+
+            var parameters = new Dictionary<string, object>();
+            parameters.AddParameter("side", side);
+            parameters.AddParameter("quantity", quantity);
+            parameters.AddParameter("price", price);
+            parameters.AddParameter("pair", symbol);
+            parameters.AddParameter("stopPrice", stopPrice);
+            parameters.AddParameter("type", type);
+            parameters.AddOptionalParameter("customerOrderId", symbol);
+            parameters.AddOptionalParameter("timeInForce", timeInForce);
+
+
+            return await _baseClient.SendRequestInternal<ValrPlaceOrderResponse>(_baseClient.GetUrl(TradingEndpoints.LimitOrder), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
     }
 }

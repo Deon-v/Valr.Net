@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Converters\" />
-    <Folder Include="Endpoints\SpotApi\" />
     <Folder Include="Icon\" />
     <Folder Include="SymbolOrderBooks\" />
   </ItemGroup>
