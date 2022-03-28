@@ -81,7 +81,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>A collection of open orders</returns>
-        Task<WebCallResult<ICollection<ValrOpenOrderResponse>>> GetOpenOrderAsync(long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrOpenOrderResponse>>> GetOpenOrderAsync(long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get historical orders placed by you
@@ -92,7 +92,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>A collection of historical orders for the account</returns>
-        Task<WebCallResult<ICollection<ValrOrderHistoryResponse>>> GetOrderHistoryAsync(int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrOrderHistoryResponse>>> GetOrderHistoryAsync(int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get a summary of a close("Filled", "Cancelled" or "Failed") order
@@ -123,7 +123,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>A collection of order details</returns>
-        Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrOrderDetailResponse>>> GetOrderDetailAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get a detailed history of an order's statuses
@@ -133,7 +133,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>A collection of order details</returns>
-        Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<ValrOrderDetailResponse>>> GetOrderDetailAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancel an open order
@@ -144,7 +144,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Success or failure</returns>
-        Task<WebCallResult> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<string>> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancel an open order
@@ -155,6 +155,6 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Success or failure</returns>
-        Task<WebCallResult> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<string>> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default);
     }
 }

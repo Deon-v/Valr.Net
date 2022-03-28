@@ -17,10 +17,10 @@ namespace Valr.Net.Objects.Models.General.ExchangeData
         public string Side { get; set; }
 
         [JsonProperty("quantity")]
-        public string Quantity { get; set; }
+        public decimal Quantity { get; set; }
 
         [JsonProperty("price")]
-        public string Price { get; set; }
+        public decimal Price { get; set; }
 
         [JsonProperty("currencyPair")]
         public string CurrencyPair { get; set; }

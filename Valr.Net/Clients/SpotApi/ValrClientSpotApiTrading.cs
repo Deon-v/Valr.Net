@@ -19,7 +19,7 @@ namespace Valr.Net.Clients.SpotApi
             _log = log;
         }
 
-        public async Task<WebCallResult> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<string>> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddParameter("orderId", id);
@@ -28,10 +28,10 @@ namespace Valr.Net.Clients.SpotApi
             var result = await _baseClient.SendRequestInternal<string>(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
                 HttpMethod.Delete, ct, signed: true, parameters: parameters).ConfigureAwait(false);
 
-            return result.AsDataless();
+            return result.As("");
         }
 
-        public async Task<WebCallResult> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<string>> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddParameter("customerOrderId", clientOrderId);
@@ -40,30 +40,30 @@ namespace Valr.Net.Clients.SpotApi
             var result = await _baseClient.SendRequestInternal<string>(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
                 HttpMethod.Delete, ct, signed: true, parameters: parameters).ConfigureAwait(false);
 
-            return result.AsDataless();
+            return result.As("");
         }
 
-        public async Task<WebCallResult<ICollection<ValrOpenOrderResponse>>> GetOpenOrderAsync(long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrOpenOrderResponse>>> GetOpenOrderAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestInternal<ICollection<ValrOpenOrderResponse>>(_baseClient.GetUrl(TradingEndpoints.OpenOrders),
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrOpenOrderResponse>>(_baseClient.GetUrl(TradingEndpoints.OpenOrders),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public async Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrOrderDetailResponse>>> GetOrderDetailAsync(Guid id, long? receiveWindow = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestInternal<ICollection<ValrOrderDetailResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailId.Replace(":orderId", id.ToString())),
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrOrderDetailResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailId.Replace(":orderId", id.ToString())),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public async Task<WebCallResult<ICollection<ValrOrderDetailResponse>>> GetOrderDetailAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrOrderDetailResponse>>> GetOrderDetailAsync(int clientOrderId, long? receiveWindow = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestInternal<ICollection<ValrOrderDetailResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailCustomId.Replace(":customerOrderId", clientOrderId.ToString())),
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrOrderDetailResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistoryDetailCustomId.Replace(":customerOrderId", clientOrderId.ToString())),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
-        public async Task<WebCallResult<ICollection<ValrOrderHistoryResponse>>> GetOrderHistoryAsync(int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<ValrOrderHistoryResponse>>> GetOrderHistoryAsync(int skip = 0, int limit = 10, long? receiveWindow = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestInternal<ICollection<ValrOrderHistoryResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistory),
+            return await _baseClient.SendRequestInternal<IEnumerable<ValrOrderHistoryResponse>>(_baseClient.GetUrl(TradingEndpoints.OrderHistory),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 

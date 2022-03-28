@@ -3,6 +3,7 @@ using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
+using Valr.Net.Clients.GeneralApi.Wallets;
 using Valr.Net.Clients.SpotApi;
 using Valr.Net.Interfaces.Clients.GeneralApi;
 using Valr.Net.Interfaces.Clients.GeneralApi.Wallets;

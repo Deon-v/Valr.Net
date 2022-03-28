@@ -1,16 +1,20 @@
 ﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.CommonObjects;
+using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using Valr.Net.Converters;
+using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.SpotApi;
+using Valr.Net.Objects.Models.Spot.Trading;
 using Valr.Net.Objects.Options;
 
 namespace Valr.Net.Clients.SpotApi
 {
-    public class ValrClientSpotApi : RestApiClient, IValrClientSpotApi
+    public class ValrClientSpotApi : RestApiClient, IValrClientSpotApi, ISpotClient
     {
         #region fields 
         private readonly ValrClient _baseClient;
@@ -28,6 +32,11 @@ namespace Valr.Net.Clients.SpotApi
         public IValrClientSpotApiTrading Spot { get; }
         /// <inheritdoc />
         public IValrClientSpotApiInstantTrading InstantTrade { get; }
+
+        /// <inheritdoc />
+        public ISpotClient CommonSpotClient => this;
+
+        string IBaseRestClient.ExchangeName => "Valr";
         #endregion
 
         /// <summary>
@@ -74,6 +83,7 @@ namespace Valr.Net.Clients.SpotApi
 
         #endregion
 
+        #region RestApi Client
         /// <inheritdoc />
         protected override Task<WebCallResult<DateTime>> GetServerTimestampAsync()
             => _baseClient.GeneralApi.ExchangeData.GetServerTimeAsync();
@@ -89,6 +99,275 @@ namespace Valr.Net.Clients.SpotApi
         /// <inheritdoc />
         public string GetSymbolName(string baseAsset, string quoteAsset) =>
             (baseAsset + quoteAsset).ToUpper(CultureInfo.InvariantCulture);
+        #endregion
+
+        #region Spot Client
+        async Task<WebCallResult<OrderId>> ISpotClient.PlaceOrderAsync(string symbol, CommonOrderSide side, CommonOrderType type, decimal quantity, decimal? price, string? accountId, string? clientOrderId, CancellationToken ct)
+        {
+            int? clientId = null;
+            if (clientOrderId != null)
+            {
+                if (!int.TryParse(clientOrderId, out var id))
+                    throw new ArgumentException("ClientOrderId for Valr should be parsable to int");
+                else
+                    clientId = id;
+            }
+
+            WebCallResult<ValrPlaceOrderResponse> result = null;
+
+            switch (type)
+            {
+                case CommonOrderType.Market:
+                    {
+                        result = await _baseClient.SpotApi.Spot.PlaceMarketOrderAsync(symbol, EnumConverter.ConvertFromCommonOrderSde(side), quantity, clientId);
+                        break;
+                    }
+                case CommonOrderType.Limit:
+                    {
+                        if (!price.HasValue)
+                        {
+                            throw new ArgumentException("Prices needs to have a value for limit orders");
+                        }
+                        result = await _baseClient.SpotApi.Spot.PlaceLimitOrderAsync(symbol,
+                            EnumConverter.ConvertFromCommonOrderSde(side), quantity, price.Value, clientOrderId: clientId);
+                        break;
+                    }
+                default:
+                    {
+                        throw new ArgumentException("Order type other not supported by the common api, for more other order types please see VarlApiClient.SpotApi.Spot or VarlApiClient.SpotApi.InstantTrade");
+                    }
+            }
+
+
+
+
+            if (!result)
+                return result.As<OrderId>(null);
+
+            return result.As(new OrderId
+            {
+                SourceObject = result.Data,
+                Id = result.Data.Id.ToString()
+            });
+        }
+
+        /// <summary>
+        /// Get the name of a symbol for Valr based on the base and quote asset
+        /// </summary>
+        /// <param name="baseAsset"></param>
+        /// <param name="quoteAsset"></param>
+        /// <returns></returns>
+        string IBaseRestClient.GetSymbolName(string baseAsset, string quoteAsset) => (baseAsset + quoteAsset).ToUpperInvariant();
+
+        async Task<WebCallResult<IEnumerable<Symbol>>> IBaseRestClient.GetSymbolsAsync(CancellationToken ct)
+        {
+            var exchangeInfo = await _baseClient.GeneralApi.ExchangeData.GetSupportedPairsAsync();
+
+            if (!exchangeInfo)
+                return exchangeInfo.As<IEnumerable<Symbol>>(null);
+
+            return exchangeInfo.As(exchangeInfo.Data.Select(s => new Symbol
+            {
+                SourceObject = s,
+                Name = s.Symbol,
+                MinTradeQuantity = s.MinBaseAmount,
+                QuantityStep = s.TickSize,
+                QuantityDecimals = s.BaseDecimalPlaces
+            }));
+        }
+
+        async Task<WebCallResult<Ticker>> IBaseRestClient.GetTickerAsync(string symbol, CancellationToken ct)
+        {
+            var asset = await _baseClient.GeneralApi.ExchangeData.GetMarketSummaryForPairAsync(symbol);
+
+            if (!asset)
+                return asset.As<Ticker>(null);
+
+            var t = asset.Data;
+
+            return asset.As(new Ticker
+            {
+                HighPrice = t.HighPrice,
+                LastPrice = t.LastTradedPrice,
+                LowPrice = t.LowPrice,
+                Volume = t.BaseVolume,
+                Symbol = t.CurrencyPair,
+                Price24H = t.PreviousClosePrice,
+                SourceObject = t
+            });
+        }
+
+        async Task<WebCallResult<IEnumerable<Ticker>>> IBaseRestClient.GetTickersAsync(CancellationToken ct)
+        {
+            var asset = await _baseClient.GeneralApi.ExchangeData.GetMarketSummariesAsync();
+
+            if (!asset)
+                return asset.As<IEnumerable<Ticker>>(null);
+
+            return asset.As(asset.Data.Select(t => new Ticker
+            {
+                HighPrice = t.HighPrice,
+                LastPrice = t.LastTradedPrice,
+                LowPrice = t.LowPrice,
+                Volume = t.BaseVolume,
+                Symbol = t.CurrencyPair,
+                Price24H = t.PreviousClosePrice,
+                SourceObject = t
+            }));
+        }
+
+        async Task<WebCallResult<IEnumerable<Kline>>> IBaseRestClient.GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime, DateTime? endTime, int? limit, CancellationToken ct)
+        {
+            throw new NotImplementedException("Valr does not support KLines at the moment");
+        }
+
+        async Task<WebCallResult<OrderBook>> IBaseRestClient.GetOrderBookAsync(string symbol, CancellationToken ct)
+        {
+            var book = await _baseClient.GeneralApi.ExchangeData.GetPublicOrderBookFullAsync(symbol);
+
+            if (!book)
+                return book.As<OrderBook>(null);
+
+            var b = book.Data;
+
+            return book.As(new OrderBook
+            {
+                SourceObject = b,
+                Asks = b.Asks.Select(s => new OrderBookEntry { Price = s.Price, Quantity = s.Quantity }),
+                Bids = b.Bids.Select(s => new OrderBookEntry { Price = s.Price, Quantity = s.Quantity })
+            });
+        }
+
+        async Task<WebCallResult<IEnumerable<Trade>>> IBaseRestClient.GetRecentTradesAsync(string symbol, CancellationToken ct)
+        {
+            var trades = await _baseClient.GeneralApi.ExchangeData.GetTradeHistoryAsync(symbol);
+
+            if (!trades)
+                return trades.As<IEnumerable<Trade>>(null);
+
+            return trades.As(trades.Data.Select(s => new Trade
+            {
+                SourceObject = s,
+                Price = s.Price,
+                Quantity = s.Quantity,
+                Symbol = s.CurrencyPair,
+                Timestamp = s.TradeTime
+            }));
+        }
+
+        async Task<WebCallResult<IEnumerable<Balance>>> IBaseRestClient.GetBalancesAsync(string? accountId, CancellationToken ct)
+        {
+            var balances = await _baseClient.GeneralApi.Account.GetAccountBalancesAsync();
+
+            if (!balances)
+                return balances.As<IEnumerable<Balance>>(null);
+
+
+            return balances.As(balances.Data.Select(s => new Balance
+            {
+                SourceObject = s,
+                Asset = s.Currency,
+                Available = s.Available,
+                Total = s.Total
+            }));
+        }
+
+        async Task<WebCallResult<Order>> IBaseRestClient.GetOrderAsync(string orderId, string? symbol, CancellationToken ct)
+        {
+            var order = await _baseClient.SpotApi.Spot.GetOrderStatusAsync(symbol, Guid.Parse(orderId));
+
+            if (!order)
+                return order.As<Order>(null);
+
+            var o = order.Data;
+
+            return order.As(new Order
+            {
+                SourceObject = o,
+                Symbol = o.CurrencyPair,
+                Quantity = o.OriginalQuantity,
+                Price = o.OriginalPrice,
+                Side = EnumConverter.ConvertToCommonOrderSde(o.Side),
+                Timestamp = o.Created,
+                Id = o.Id.ToString(),
+                QuantityFilled = o.OriginalQuantity - o.RemainingQuantity,
+                Status = EnumConverter.ConvertToCommonOrderSide(o.Status),
+                Type = EnumConverter.ConvertToCommonOrderType(o.Type)
+            });
+        }
+
+        async Task<WebCallResult<IEnumerable<UserTrade>>> IBaseRestClient.GetOrderTradesAsync(string orderId, string? symbol, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        async Task<WebCallResult<IEnumerable<Order>>> IBaseRestClient.GetOpenOrdersAsync(string? symbol, CancellationToken ct)
+        {
+            var orders = await _baseClient.SpotApi.Spot.GetOpenOrderAsync();
+
+            if (!orders)
+                return orders.As<IEnumerable<Order>>(null);
+
+            if (!string.IsNullOrEmpty(symbol))
+            {
+                orders = orders.As(orders.Data.Where(w => w.CurrencyPair == symbol));
+            }
+
+            return orders.As(orders.Data.Select(s => new Order
+            {
+                SourceObject = s,
+                Symbol = s.CurrencyPair,
+                Quantity = s.OriginalQuantity,
+                Price = s.OriginalPrice,
+                Side = EnumConverter.ConvertToCommonOrderSde(s.Side),
+                Timestamp = s.Created,
+                Id = s.Id.ToString(),
+                QuantityFilled = s.OriginalQuantity - s.RemainingQuantity,
+                Status = EnumConverter.ConvertToCommonOrderSide(s.Status),
+                Type = EnumConverter.ConvertToCommonOrderType(s.Type)
+
+            }));
+        }
+
+        async Task<WebCallResult<IEnumerable<Order>>> IBaseRestClient.GetClosedOrdersAsync(string? symbol, CancellationToken ct)
+        {
+            var orders = await _baseClient.SpotApi.Spot.GetOrderHistoryAsync();
+
+            if (!orders)
+                return orders.As<IEnumerable<Order>>(null);
+
+            if (!string.IsNullOrEmpty(symbol))
+            {
+                orders = orders.As(orders.Data.Where(w => w.CurrencyPair == symbol));
+            }
+
+            return orders.As(orders.Data
+                .Where(w => w.Status is ValrOrderStatus.Failed
+                    or ValrOrderStatus.Cancelled
+                    or ValrOrderStatus.Filled)
+                .Select(s => new Order
+                {
+                    SourceObject = s,
+                    Symbol = s.CurrencyPair,
+                    Quantity = s.OriginalQuantity,
+                    Price = s.OriginalPrice,
+                    Side = EnumConverter.ConvertToCommonOrderSde(s.Side),
+                    Timestamp = s.Created,
+                    Id = s.Id.ToString(),
+                    QuantityFilled = s.OriginalQuantity - s.RemainingQuantity,
+                    Status = EnumConverter.ConvertToCommonOrderSide(s.Status),
+                    Type = EnumConverter.ConvertToCommonOrderType(s.Type)
+
+                }));
+        }
+
+        async Task<WebCallResult<OrderId>> IBaseRestClient.CancelOrderAsync(string orderId, string? symbol, CancellationToken ct)
+        {
+            var result = await _baseClient.SpotApi.Spot.CancelOrderAsync(Guid.Parse(orderId), symbol);
+
+            return result.As<OrderId>(new OrderId { Id = orderId });
+        }
+        #endregion
 
         internal void InvokeOrderPlaced(OrderId id)
         {

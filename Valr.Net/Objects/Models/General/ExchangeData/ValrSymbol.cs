@@ -35,6 +35,6 @@ namespace Valr.Net.Objects.Models.General.ExchangeData
         public decimal TickSize { get; set; }
 
         [JsonProperty("baseDecimalPlaces")]
-        public decimal BaseDecimalPlaces { get; set; }
+        public int BaseDecimalPlaces { get; set; }
     }
 }
