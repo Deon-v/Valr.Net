@@ -19,6 +19,7 @@ namespace Valr.Net.Clients.SpotApi
             _log = log;
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrInstantTradeStatusResponse>> GetInstantOrderStatusAsync(string currencyPair, Guid id, long? receiveWindow = null, CancellationToken ct = default)
         {
             string path = InstantTradingEndpoints.OrderStatus.Replace(":orderId", id.ToString())
@@ -27,6 +28,7 @@ namespace Valr.Net.Clients.SpotApi
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrInstantTradeQuote>> GetQuoteAsync(string currencyPair, string symbol, ValrOrderSide side, decimal quantity, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
@@ -38,6 +40,7 @@ namespace Valr.Net.Clients.SpotApi
                 HttpMethod.Post, ct, parameters: parameters, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrInstantTradeResponse>> PlaceInstantOrderAsync(string currencyPair, string symbol, ValrOrderSide side, decimal quantity, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();

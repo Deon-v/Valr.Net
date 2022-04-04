@@ -144,7 +144,7 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Success or failure</returns>
-        Task<WebCallResult<string>> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<object>> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancel an open order
@@ -155,6 +155,6 @@ namespace Valr.Net.Interfaces.Clients.SpotApi
         /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Success or failure</returns>
-        Task<WebCallResult<string>> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default);
+        Task<WebCallResult<object>> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default);
     }
 }

@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="CryptoExchange.Net" Version="5.1.6" />
-    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="16.11.0" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.1.0" />
   </ItemGroup>
 
 </Project>

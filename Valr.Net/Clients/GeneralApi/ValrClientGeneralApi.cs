@@ -13,7 +13,7 @@ namespace Valr.Net.Clients.GeneralApi
 {
     public class ValrClientGeneralApi : RestApiClient, IValrClientGeneralApi
     {
-        #region fields
+        #region Fields
         private readonly Log _log;
         private readonly ValrClient _baseClient;
         internal new readonly ValrClientOptions Options;
@@ -48,6 +48,7 @@ namespace Valr.Net.Clients.GeneralApi
 
         #endregion
 
+        #region Helpers
         internal Uri GetUrl(string endpoint)
         {
             return new Uri(BaseAddress.AppendPath(endpoint));
@@ -67,7 +68,7 @@ namespace Valr.Net.Clients.GeneralApi
         }
 
         protected override TimeSyncInfo GetTimeSyncInfo() =>
-         new TimeSyncInfo(_log, Options.SpotApiOptions.AutoTimestamp, Options.SpotApiOptions.TimestampRecalculationInterval, ValrClientSpotApi.TimeSyncState);
+            new(_log, Options.SpotApiOptions.AutoTimestamp, Options.SpotApiOptions.TimestampRecalculationInterval, ValrClientSpotApi.TimeSyncState);
 
         public override TimeSpan GetTimeOffset() => ValrClientSpotApi.TimeSyncState.TimeOffset;
 
@@ -76,7 +77,6 @@ namespace Valr.Net.Clients.GeneralApi
 
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
             => new ValrAuthenticationProvider(credentials);
-
-
+        #endregion
     }
 }

@@ -18,6 +18,7 @@ namespace Valr.Net.Clients.GeneralApi
             _baseClient = valrClientGeneralApi;
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrSubAccountCreated>> CreateSubAccountAsync(string label, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
@@ -27,18 +28,21 @@ namespace Valr.Net.Clients.GeneralApi
                 HttpMethod.Post, ct, parameters: parameters, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrSubAccountBalances>> GetSubAccountBalancesAsync(CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<ValrSubAccountBalances>(_baseClient.GetUrl(SubAccountEndpoints.Balances),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrSubAccount>>> GetSubAccountsAsync(CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<IEnumerable<ValrSubAccount>>(_baseClient.GetUrl(SubAccountEndpoints.SubAccounts),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<bool>> CreateSubAccountTransferAsync(string asset, string fromId, string toId, decimal amount, int? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();

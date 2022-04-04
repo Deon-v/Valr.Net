@@ -12,7 +12,7 @@ namespace Valr.Net.Objects.Options
             SocketSubscriptionsCombineTarget = 10
         };
 
-        private ApiClientOptions _spotStreamsOptions = new ApiClientOptions(ValrApiAddresses.Default.SocketClientAddress);
+        private ApiClientOptions _spotStreamsOptions = new ApiClientOptions(ValrApiAddresses.Default.SpotSocketClientAddress);
         /// <summary>
         /// Spot streams options
         /// </summary>
@@ -20,6 +20,16 @@ namespace Valr.Net.Objects.Options
         {
             get => _spotStreamsOptions;
             set => _spotStreamsOptions = new ApiClientOptions(_spotStreamsOptions, value);
+        }
+
+        private ApiClientOptions _generalStreamsOptions = new ApiClientOptions(ValrApiAddresses.Default.GeneralSocketClientAddress);
+        /// <summary>
+        /// Spot streams options
+        /// </summary>
+        public ApiClientOptions GeneralStreamsOptions
+        {
+            get => _spotStreamsOptions;
+            set => _spotStreamsOptions = new ApiClientOptions(_generalStreamsOptions, value);
         }
 
         /// <summary>
@@ -39,6 +49,7 @@ namespace Valr.Net.Objects.Options
                 return;
 
             _spotStreamsOptions = new ApiClientOptions(baseOn.SpotStreamsOptions, null);
+            _generalStreamsOptions = new ApiClientOptions(baseOn.GeneralStreamsOptions, null);
         }
     }
 }

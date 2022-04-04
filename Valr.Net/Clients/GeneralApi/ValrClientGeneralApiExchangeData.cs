@@ -19,30 +19,35 @@ namespace Valr.Net.Clients.GeneralApi
             _baseClient = valrClientGeneralApi;
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrOrderBook>> GetAuthenticatedOrderBookAggregatedAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<ValrOrderBook>(_baseClient.GetUrl(ExchangeDataEndpoints.OrderBookAuth.Replace(":currencyPair", currencyPair)),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrOrderBook>> GetAuthenticatedOrderBookFullAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<ValrOrderBook>(_baseClient.GetUrl(ExchangeDataEndpoints.OrderBookFullAuth.Replace(":currencyPair", currencyPair)),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrMarketSummary>>> GetMarketSummariesAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<IEnumerable<ValrMarketSummary>>(_baseClient.GetUrl(ExchangeDataEndpoints.MarketSummary),
                 HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrMarketSummary>> GetMarketSummaryForPairAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<ValrMarketSummary>(_baseClient.GetUrl(ExchangeDataEndpoints.MarketSummaryForPair.Replace(":currencyPair", currencyPair)),
                 HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrPairOrderTypes>>> GetOrderTypesByPairAsync(string? currencyPair = null, long? receiveWindow = null, CancellationToken ct = default)
         {
             var result = await _baseClient.SendRequestInternal<IEnumerable<ValrPairOrderTypes>>(_baseClient.GetUrl(ExchangeDataEndpoints.OrderTypes),
@@ -56,36 +61,42 @@ namespace Valr.Net.Clients.GeneralApi
             return result;
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrOrderBook>> GetPublicOrderBookAggregatedAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<ValrOrderBook>(_baseClient.GetUrl(ExchangeDataEndpoints.OrderBook.Replace(":currencyPair", currencyPair)),
                 HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrOrderBook>> GetPublicOrderBookFullAsync(string currencyPair, long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<ValrOrderBook>(_baseClient.GetUrl(ExchangeDataEndpoints.OrderBookFull.Replace(":currencyPair", currencyPair)),
                 HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default)
         {
             var result = await _baseClient.SendRequestInternal<ValrCheckTime>(_baseClient.GetUrl(ExchangeDataEndpoints.ServerTime), HttpMethod.Get, ct).ConfigureAwait(false);
             return result.As(result.Data?.time ?? default);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrCurrency>>> GetSupportedCurrenciesAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<IEnumerable<ValrCurrency>>(_baseClient.GetUrl(ExchangeDataEndpoints.Currencies),
                 HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrSymbol>>> GetSupportedPairsAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<IEnumerable<ValrSymbol>>(_baseClient.GetUrl(ExchangeDataEndpoints.CurrencyPairs),
                 HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<ValrStatus>> GetSystemStatusAsync(CancellationToken ct = default)
         {
             var result = await _baseClient.SendRequestInternal<ValrSystemStatus>(_baseClient.GetUrl(ExchangeDataEndpoints.SystemStatus),
@@ -94,6 +105,7 @@ namespace Valr.Net.Clients.GeneralApi
             return result.As(result.Data.status);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetTradeHistoryAsync(string currencyPair, int skip = 0, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
@@ -104,6 +116,7 @@ namespace Valr.Net.Clients.GeneralApi
                 HttpMethod.Get, ct, parameters: parameters).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetTradeHistoryBeforeIdAsync(string currencyPair, Guid id, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
@@ -114,6 +127,7 @@ namespace Valr.Net.Clients.GeneralApi
                 HttpMethod.Get, ct, parameters: parameters).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetTradeHistoryFilteredAsync(string currencyPair, DateTime startTime, DateTime endTime, int skip = 0, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();

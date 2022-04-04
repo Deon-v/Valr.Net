@@ -21,7 +21,6 @@ namespace Valr.Net
             _subAccountId = subAccountId;
             _testTimeStamp = timeStamp;
 
-
             encryptor = new HMACSHA512(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
 
@@ -41,7 +40,7 @@ namespace Valr.Net
 
             headers.Add("X-VALR-API-KEY", Credentials.Key.GetString());
 
-            headers.Add("X-VALR-SIGNATURE", SignRequest(Credentials.Secret.GetString(), timestamp, method.Method, uri.PathAndQuery, _subAccountId,
+            headers.Add("X-VALR-SIGNATURE", SignRequest(timestamp, method.Method, uri.PathAndQuery, _subAccountId,
                 providedParameters));
             headers.Add("X-VALR-TIMESTAMP", timestamp);
 
@@ -56,9 +55,9 @@ namespace Valr.Net
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }
 
-        private string SignRequest(string apiKeySecret, string timestamp, string verb, string path, string subAccountId, Dictionary<string, object>? body = null)
+        private string SignRequest(string timestamp, string verb, string path, string subAccountId, Dictionary<string, object>? body = null)
         {
-            string b = String.Empty;
+            string b = string.Empty;
 
             if (body?.Count != 0)
             {
@@ -68,11 +67,8 @@ namespace Valr.Net
             var payload = timestamp + verb.ToUpper() + path + b + subAccountId;
             byte[] payloadBytes = Encoding.UTF8.GetBytes(payload);
 
-            using (HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes(apiKeySecret)))
-            {
-                byte[] hash = hmac.ComputeHash(payloadBytes);
-                return BytesToHexString(hash);
-            }
+            byte[] hash = encryptor.ComputeHash(payloadBytes);
+            return BytesToHexString(hash);
         }
 
         private new string BytesToHexString(byte[] hash)

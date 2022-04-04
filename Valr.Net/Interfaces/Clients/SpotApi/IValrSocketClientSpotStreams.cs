@@ -1,6 +1,6 @@
 ﻿namespace Valr.Net.Interfaces.Clients.SpotApi
 {
-    internal interface IValrSocketClientSpotStreams
+    public interface IValrSocketClientSpotStreams : IDisposable
     {
     }
 }

@@ -20,12 +20,14 @@ namespace Valr.Net.Clients.GeneralApi
             _baseClient = valrClientGeneralApi;
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrAccountBalance>>> GetAccountBalancesAsync(long? receiveWindow = null, CancellationToken ct = default)
         {
             return await _baseClient.SendRequestInternal<IEnumerable<ValrAccountBalance>>(_baseClient.GetUrl(AccountEndpoints.Balances),
                 HttpMethod.Get, ct, signed: true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetTransactionHistoryAsync(int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
@@ -36,6 +38,7 @@ namespace Valr.Net.Clients.GeneralApi
                 HttpMethod.Get, ct, signed: true, parameters: parameters).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetTransactionHistoryBeforeIdAsync(Guid id, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
@@ -46,6 +49,7 @@ namespace Valr.Net.Clients.GeneralApi
                 HttpMethod.Get, ct, signed: true, parameters: parameters).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrAccountTransaction>>> GetTransactionHistoryFilteredAsync(ValrTransactionType[] transactionTypes, DateTime startTime, DateTime endTime, string? currency = null, int skip = 0, int limit = 200, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
@@ -56,11 +60,11 @@ namespace Valr.Net.Clients.GeneralApi
             parameters.AddParameter("endTime", endTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
             parameters.AddOptionalParameter("currency", currency);
 
-            //transactionTypes
             return await _baseClient.SendRequestInternal<IEnumerable<ValrAccountTransaction>>(_baseClient.GetUrl(AccountEndpoints.TransactionHistory),
                 HttpMethod.Get, ct, signed: true, parameters: parameters).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<ValrTrade>>> GetRecentTradesByPairAsync(string currencyPair, int limit = 100, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
