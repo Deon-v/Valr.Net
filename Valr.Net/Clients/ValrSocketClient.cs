@@ -1,9 +1,12 @@
 ﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.WebSockets;
 using Valr.Net.Clients.GeneralApi;
 using Valr.Net.Clients.SpotApi;
 using Valr.Net.Enums;
@@ -22,10 +25,8 @@ namespace Valr.Net.Clients
         public IValrSocketClientGeneralStreams GeneralStreams { get; }
         #endregion
 
-        public BaseSocketClientOptions ClientOptions => throw new NotImplementedException();
-
         /// <summary>
-        /// Create a new instance of BinanceSocketClientSpot with default options
+        /// Create a new instance of ValrSocketClientSpot with default options
         /// </summary>
         public ValrSocketClient() : this(ValrSocketClientOptions.Default)
         {
@@ -35,6 +36,13 @@ namespace Valr.Net.Clients
         {
             SpotStreams = new ValrSocketClientSpotStreams(log, this, options);
             GeneralStreams = new ValrSocketClientGeneralStreams(log, this, options);
+
+            AddGenericHandler("Pong", (messageEvent) => { });
+
+            SendPeriodic("Ping", TimeSpan.FromSeconds(30), con => new
+            {
+                type = "PING"
+            });
         }
 
         public double IncomingKbps => throw new NotImplementedException();
@@ -53,16 +61,16 @@ namespace Valr.Net.Clients
         internal CallResult<T> DeserializeInternal<T>(JToken obj, JsonSerializer? serializer = null, int? requestId = null)
             => Deserialize<T>(obj, serializer, requestId);
 
-        internal Task<CallResult<UpdateSubscription>> SubscribeInternal<T>(SocketApiClient apiClient, string url, string _event, string pair, Action<DataEvent<T>> onData, CancellationToken ct, bool authenticated = false)
+        internal Task<CallResult<UpdateSubscription>> SubscribeInternal<T>(SocketApiClient apiClient, string url, ValrSocketOutboundEvent _event, string pair, Action<DataEvent<T>> onData, CancellationToken ct, bool authenticated = false)
         {
             var request = new ValrSocketRequest
             {
-                type = ValrSocketEventType.SUBSCRIBE,
-                subscriptions = new[]
+                EventType = ValrSocketEventType.SUBSCRIBE,
+                Subscriptions = new[]
                 {
                     new Subscription
                     {
-                        @event = _event,
+                        Event = _event,
                         pairs = new[]
                         {
                             pair
@@ -74,19 +82,14 @@ namespace Valr.Net.Clients
             return SubscribeAsync(apiClient, url, request, null, authenticated, onData, ct);
         }
 
-        internal Task<CallResult<UpdateSubscription>> SendPing<T>(SocketApiClient apiClient, string url, Action<DataEvent<T>> onData,
+        internal Task<CallResult<UpdateSubscription>> SubscribeInternalNoRequest<T>(SocketApiClient apiClient, string url, Action<DataEvent<T>> onData,
             CancellationToken ct, bool authenticated = false)
         {
-            dynamic request = new
-            {
-                type = "PING"
-            };
-
-            return SubscribeAsync(apiClient, url, request, null, authenticated, onData, ct);
+            return SubscribeAsync(apiClient, url, null, null, authenticated, onData, ct);
         }
 
         /// <inheritdoc />
-        protected override bool HandleQueryResponse<T>(SocketApiClient apiClient, SocketConnection s, object request, JToken data, out CallResult<T> callResult)
+        protected override bool HandleQueryResponse<T>(SocketConnection socketConnection, object request, JToken data, [NotNullWhen(true)] out CallResult<T>? callResult)
         {
             throw new NotImplementedException();
         }
@@ -100,10 +103,6 @@ namespace Valr.Net.Clients
 
             var type = message["type"];
             if (type == null)
-                return false;
-
-            var bRequest = (BinanceSocketRequest)request;
-            if ((int)id != bRequest.Id)
                 return false;
 
             var result = message["result"];
@@ -131,12 +130,12 @@ namespace Valr.Net.Clients
             if (message.Type != JTokenType.Object)
                 return false;
 
-            var bRequest = (BinanceSocketRequest)request;
-            var stream = message["stream"];
-            if (stream == null)
+            var bRequest = (ValrSocketRequest)request;
+            var stream = message["type"]?.Value<ValrSocketOutboundEvent?>();
+            if (!stream.HasValue)
                 return false;
 
-            return bRequest.Params.Contains(stream.ToString());
+            return bRequest.Subscriptions.Select(s => s.Event).Contains(stream.Value);
         }
 
         /// <inheritdoc />
@@ -146,16 +145,93 @@ namespace Valr.Net.Clients
         }
 
         /// <inheritdoc />
-        protected override Task<CallResult<bool>> AuthenticateSocketAsync(SocketConnection s)
+        protected override async Task<CallResult<bool>> AuthenticateSocketAsync(SocketConnection s)
         {
-            throw new NotImplementedException();
+            if (s.ApiClient.AuthenticationProvider == null)
+                return new CallResult<bool>(new NoApiCredentialsError());
+
+
+            return new CallResult<bool>(true);
+        }
+
+        /// <summary>
+        /// Gets a connection for a new subscription or query. Can be an existing if there are open position or a new one.
+        /// </summary>
+        /// <param name="apiClient">The API client the connection is for</param>
+        /// <param name="address">The address the socket is for</param>
+        /// <param name="authenticated">Whether the socket should be authenticated</param>
+        /// <returns></returns>
+        protected override SocketConnection GetSocketConnection(SocketApiClient apiClient, string address, bool authenticated)
+        {
+            var socketResult = sockets.Where(s => s.Value.Socket.Url.TrimEnd('/') == address.TrimEnd('/')
+                                                  && (s.Value.ApiClient.GetType() == apiClient.GetType())
+                                                  && (s.Value.Authenticated == authenticated || !authenticated) && s.Value.Connected).OrderBy(s => s.Value.SubscriptionCount).FirstOrDefault();
+            var result = socketResult.Equals(default(KeyValuePair<int, SocketConnection>)) ? null : socketResult.Value;
+            if (result != null)
+            {
+                if (result.SubscriptionCount < ClientOptions.SocketSubscriptionsCombineTarget || (sockets.Count >= MaxSocketConnections && sockets.All(s => s.Value.SubscriptionCount >= ClientOptions.SocketSubscriptionsCombineTarget)))
+                {
+                    // Use existing socket if it has less than target connections OR it has the least connections and we can't make new
+                    return result;
+                }
+            }
+
+            // Create new socket
+            IWebsocket socket = authenticated ? CreateSocket(address, apiClient) : CreateSocket(address);
+
+            var socketConnection = new SocketConnection(this, apiClient, socket);
+            socketConnection.UnhandledMessage += HandleUnhandledMessage;
+            foreach (var kvp in genericHandlers)
+            {
+                var handler = SocketSubscription.CreateForIdentifier(NextId(), kvp.Key, false, kvp.Value);
+                socketConnection.AddSubscription(handler);
+            }
+
+            return socketConnection;
+        }
+
+        /// <summary>
+        /// Create a socket for an address
+        /// </summary>
+        /// <param name="address">The address the socket should connect to</param>
+        /// <param name="apiClient">The base api client with the Api credentials</param>
+        /// <returns></returns>
+        private IWebsocket CreateSocket(string address, BaseApiClient apiClient)
+        {
+            var socket = SocketFactory.CreateWebsocket(log, address, new Dictionary<string, string>(), GetAuthHeaders("/ws/account", apiClient));
+            log.Write(LogLevel.Debug, $"Socket {socket.Id} new socket created for " + address);
+
+            if (ClientOptions.Proxy != null)
+                socket.SetProxy(ClientOptions.Proxy);
+
+            socket.Timeout = ClientOptions.SocketNoDataTimeout;
+            socket.DataInterpreterBytes = dataInterpreterBytes;
+            socket.DataInterpreterString = dataInterpreterString;
+            socket.RatelimitPerSecond = RateLimitPerSocketPerSecond;
+            socket.OnError += e =>
+            {
+                if (e is WebSocketException wse)
+                    log.Write(LogLevel.Warning, $"Socket {socket.Id} error: Websocket error code {wse.WebSocketErrorCode}, details: " + e.ToLogString());
+                else
+                    log.Write(LogLevel.Warning, $"Socket {socket.Id} error: " + e.ToLogString());
+            };
+            return socket;
+        }
+
+        private Dictionary<string, string> GetAuthHeaders(string path, BaseApiClient apiClient)
+        {
+            if (apiClient.AuthenticationProvider!.Credentials.Key == null || apiClient.AuthenticationProvider.Credentials.Secret == null)
+                throw new ArgumentException("ApiKey/Secret not provided");
+
+            var headers = ((ValrAuthenticationProvider)apiClient.AuthenticationProvider).GetAuthenticationHeaders(path);
+            return headers;
         }
 
         /// <inheritdoc />
         protected override async Task<bool> UnsubscribeAsync(SocketConnection connection, SocketSubscription subscription)
         {
-            var topics = ((BinanceSocketRequest)subscription.Request!).Params;
-            var unsub = new BinanceSocketRequest { Method = "UNSUBSCRIBE", Params = topics, Id = NextId() };
+
+            var unsub = new ValrSocketRequest { EventType = ValrSocketEventType.SUBSCRIBE, Subscriptions = Array.Empty<Subscription>() };
             var result = false;
 
             if (!connection.Socket.IsOpen)
@@ -168,9 +244,6 @@ namespace Valr.Net.Clients
 
                 var id = data["id"];
                 if (id == null)
-                    return false;
-
-                if ((int)id != unsub.Id)
                     return false;
 
                 var result = data["result"];

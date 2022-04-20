@@ -28,8 +28,8 @@ namespace Valr.Net.Objects.Options
         /// </summary>
         public ApiClientOptions GeneralStreamsOptions
         {
-            get => _spotStreamsOptions;
-            set => _spotStreamsOptions = new ApiClientOptions(_generalStreamsOptions, value);
+            get => _generalStreamsOptions;
+            set => _generalStreamsOptions = new ApiClientOptions(_generalStreamsOptions, value);
         }
 
         /// <summary>

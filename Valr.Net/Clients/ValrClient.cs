@@ -42,9 +42,9 @@ namespace Valr.Net.Clients
             SpotApi = AddApiClient(new ValrClientSpotApi(log, this, options));
             PaymentApi = AddApiClient(new ValrClientPayApi(log, this, options));
 
-            requestBodyEmptyContent = "";
-            requestBodyFormat = RequestBodyFormat.Json;
-            arraySerialization = ArrayParametersSerialization.MultipleValues;
+            //requestBodyEmptyContent = "";
+            //requestBodyFormat = RequestBodyFormat.Json;
+            //arraySerialization = ArrayParametersSerialization.MultipleValues;
         }
         #endregion
 

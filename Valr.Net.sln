@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valr.Net", "Valr.Net\Valr.N
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valr.Net.UnitTests", "Valr.Net.UnitTests\Valr.Net.UnitTests.csproj", "{15ABC59B-C73B-4376-8CB5-A554EE598CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valr.Net.IntegrationTests", "Valr.Net.IntegrationTests\Valr.Net.IntegrationTests.csproj", "{76029859-DA26-43E2-9285-8914D780ACDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valr.Net.IntegrationTests", "Valr.Net.IntegrationTests\Valr.Net.IntegrationTests.csproj", "{76029859-DA26-43E2-9285-8914D780ACDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

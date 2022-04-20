@@ -114,7 +114,7 @@ namespace Valr.Net.Clients.GeneralApi
                 }
             });
 
-            return await Subscribe(handler, ct, true).ConfigureAwait(false);
+            return await Subscribe(handler, ct,true).ConfigureAwait(false);
         }
 
         public async Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(
@@ -133,7 +133,7 @@ namespace Valr.Net.Clients.GeneralApi
         /// <returns></returns>
         protected async Task<CallResult<UpdateSubscription>> Subscribe<T>(Action<DataEvent<T>> onData, CancellationToken ct, bool authenticated = false)
         {
-            return await _baseClient.SendPing(this, BaseAddress, onData, ct, authenticated).ConfigureAwait(false);
+            return await _baseClient.SubscribeInternalNoRequest(this, BaseAddress, onData, ct, authenticated).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

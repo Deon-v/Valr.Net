@@ -18,65 +18,74 @@ namespace Valr.Net.Objects.Models.General.Streams
     }
     public class NewTransactionData
     {
-        [JsonProperty("type")]
-        public Transactiontype transactionType { get; set; }
+        [JsonProperty("transactionType")]
+        public Transactiontype TransactionType { get; set; }
 
-        [JsonProperty("type")]
-        public CurrencyData debitCurrency { get; set; }
+        [JsonProperty("debitCurrency")]
+        public CurrencyData DebitCurrency { get; set; }
 
-        [JsonProperty("type")]
-        public decimal debitValue { get; set; }
+        [JsonProperty("debitValue")]
+        public decimal DebitValue { get; set; }
 
-        [JsonProperty("type")]
-        public CurrencyData creditCurrency { get; set; }
+        [JsonProperty("creditCurrency")]
+        public CurrencyData CreditCurrency { get; set; }
 
-        [JsonProperty("type")]
-        public decimal creditValue { get; set; }
+        [JsonProperty("creditValue")]
+        public decimal CreditValue { get; set; }
 
         [JsonProperty("feeCurrency")]
-        public FeeInfo FeeInfo { get; set; }
+        public CurrencyData FeeInfo { get; set; }
 
-        [JsonProperty("type")]
-        public decimal feeValue { get; set; }
+        [JsonProperty("feeValue")]
+        public decimal FeeValue { get; set; }
 
-        [JsonProperty("type")]
-        public DateTime eventAt { get; set; }
+        [JsonProperty("eventAt")]
+        public DateTime TransactionDate { get; set; }
 
-        [JsonProperty("type")]
-        public Additionalinfo additionalInfo { get; set; }
+        [JsonProperty("additionalInfo")]
+        public Additionalinfo Additionalinfo { get; set; }
 
     }
 
     public class Transactiontype
     {
-        public string type { get; set; }
-        public string description { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 
     public class CurrencyData
     {
-        public string symbol { get; set; }
-        public int decimalPlaces { get; set; }
-        public bool isActive { get; set; }
-        public string shortName { get; set; }
-        public string longName { get; set; }
-        public int supportedWithdrawDecimalPlaces { get; set; }
-    }
+        [JsonProperty("symbol")]
+        public string Symbol { get; set; }
 
-    public class FeeInfo
-    {
-        public string symbol { get; set; }
-        public int decimalPlaces { get; set; }
-        public bool isActive { get; set; }
-        public string shortName { get; set; }
-        public string longName { get; set; }
-        public int supportedWithdrawDecimalPlaces { get; set; }
+        [JsonProperty("decimalPlaces")]
+        public int DecimalPlaces { get; set; }
+
+        [JsonProperty("isActive")]
+        public bool IsActive { get; set; }
+
+        [JsonProperty("shortName")]
+        public string ShortName { get; set; }
+
+        [JsonProperty("longName")]
+        public string LongName { get; set; }
+
+        [JsonProperty("supportedWithdrawDecimalPlaces")]
+        public int SupportedWithdrawDecimalPlaces { get; set; }
     }
 
     public class Additionalinfo
     {
-        public int costPerCoin { get; set; }
-        public string costPerCoinSymbol { get; set; }
-        public string currencyPairSymbol { get; set; }
+        [JsonProperty("costPerCoin")]
+        public int CostPerCoin { get; set; }
+
+        [JsonProperty("costPerCoinSymbol")]
+        public string CostPerCoinSymbol { get; set; }
+
+        [JsonProperty("currencyPairSymbol")]
+        public string CurrencyPairSymbol { get; set; }
     }
 }

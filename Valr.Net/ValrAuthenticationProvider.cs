@@ -50,6 +50,25 @@ namespace Valr.Net
             }
         }
 
+        public Dictionary<string, string> GetAuthenticationHeaders(string path)
+        {
+            var timestamp = string.IsNullOrEmpty(_testTimeStamp) ? GetTimestamp() : _testTimeStamp;
+
+            var headers = new Dictionary<string, string>();
+
+            headers.Add("X-VALR-API-KEY", Credentials.Key.GetString());
+
+            headers.Add("X-VALR-SIGNATURE", SignRequest(timestamp, "GET", path, _subAccountId));
+            headers.Add("X-VALR-TIMESTAMP", timestamp);
+
+            if (!string.IsNullOrEmpty(_subAccountId))
+            {
+                headers.Add("X-VALR-SUB-ACCOUNT-ID", _subAccountId);
+            }
+
+            return headers;
+        }
+
         private string GetTimestamp()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
