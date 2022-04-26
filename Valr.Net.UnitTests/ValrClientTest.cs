@@ -3,6 +3,7 @@ using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Requests;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Valr.Net.Clients;
 using Valr.Net.Objects.Options;
 using Valr.Net.UnitTests.Helpers;
@@ -151,7 +151,7 @@ namespace Valr.Net.UnitTests
         public async Task RecieveSuccesCodeAndEmptyBody_Should_ReturnSuccess()
         {
             // arrange
-            var client = ValrClientHelpers.CreateClient(new ValrClientOptions { ApiCredentials = new ApiCredentials(_key, _secret),LogLevel = LogLevel.Trace});
+            var client = ValrClientHelpers.CreateClient(new ValrClientOptions { ApiCredentials = new ApiCredentials(_key, _secret), LogLevel = LogLevel.Trace });
             ValrClientHelpers.SetResponse(client, "");
 
             // act

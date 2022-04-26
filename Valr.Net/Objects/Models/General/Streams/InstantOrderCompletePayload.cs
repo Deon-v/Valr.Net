@@ -1,22 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Valr.Net.Enums;
+﻿using Newtonsoft.Json;
 
 namespace Valr.Net.Objects.Models.General.Streams
 {
-    public class InstantOrderCompletePayload
-    {
-        [JsonProperty("type")]
-        public ValrSocketInboundEvent PayloadType { get; set; }
-
-        [JsonProperty("data")]
-        public InstantOrderCompleteData Data { get; set; }
-    }
-
     public class InstantOrderCompleteData
     {
         [JsonProperty("orderId")]

@@ -1,20 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Valr.Net.Enums;
-
-namespace Valr.Net.Objects.Models.General.Streams
+﻿namespace Valr.Net.Objects.Models.General.Streams
 {
-    public class OpenOrderUpdatePayload
-    {
-        [JsonProperty("type")]
-        public ValrSocketInboundEvent PayloadType { get; set; }
-        public OpenOrderData[] data { get; set; }
-    }
-
     public class OpenOrderData
     {
         public string orderId { get; set; }

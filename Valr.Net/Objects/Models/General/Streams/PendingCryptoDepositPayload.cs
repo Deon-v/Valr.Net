@@ -1,20 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Valr.Net.Enums;
-
-namespace Valr.Net.Objects.Models.General.Streams
+﻿namespace Valr.Net.Objects.Models.General.Streams
 {
-    public class PendingCryptoDepositPayload
-    {
-        [JsonProperty("type")]
-        public ValrSocketInboundEvent PayloadType { get; set; }
-        public Data data { get; set; }
-    }
-
     public class PendingCryptoDepositData
     {
         public CurrencyInfo currency { get; set; }

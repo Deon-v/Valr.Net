@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Valr.Net.Enums;
 
 namespace Valr.Net.Objects.Models.General.Streams
@@ -11,6 +7,7 @@ namespace Valr.Net.Objects.Models.General.Streams
     internal class ValrSocketRequest
     {
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ValrSocketEventType EventType { get; set; }
 
         [JsonProperty("subscriptions")]
@@ -20,6 +17,7 @@ namespace Valr.Net.Objects.Models.General.Streams
     public class Subscription
     {
         [JsonProperty("event")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ValrSocketOutboundEvent Event { get; set; }
 
         [JsonProperty("pairs")]

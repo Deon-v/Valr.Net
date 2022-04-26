@@ -6,7 +6,6 @@ using CryptoExchange.Net.Sockets;
 using Newtonsoft.Json.Linq;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.GeneralApi;
-using Valr.Net.Objects.Models.General.Streams;
 using Valr.Net.Objects.Options;
 
 namespace Valr.Net.Clients.GeneralApi
@@ -16,6 +15,7 @@ namespace Valr.Net.Clients.GeneralApi
         #region fields
         private readonly ValrSocketClient _baseClient;
         private readonly Log _log;
+        private readonly ValrSocketClientOptions _options;
         #endregion
 
         #region constructor/destructor
@@ -28,6 +28,7 @@ namespace Valr.Net.Clients.GeneralApi
         {
             _baseClient = baseClient;
             _log = log;
+            _options = options;
         }
         #endregion
 
@@ -49,72 +50,81 @@ namespace Valr.Net.Clients.GeneralApi
             {
                 var combinedToken = JToken.Parse(data.Data);
 
-                var eventType = combinedToken["type"]?.ToObject<ValrSocketInboundEvent>();
-                if (eventType == null)
+                var eventType = combinedToken["type"]?.ToObject<string>();
+                if (Enum.TryParse(eventType, false, out ValrSocketInboundEvent parsedEventType))
                     return;
 
-                switch (eventType)
-                {
-                    case ValrSocketInboundEvent.NEW_ACCOUNT_HISTORY_RECORD:
-                        {
-                            InvokeHandler(data, combinedToken, newTransactionHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.BALANCE_UPDATE:
-                        {
-                            InvokeHandler(data, combinedToken, balanceUpdateHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.BALANCE_SNAPSHOT:
-                        {
-                            InvokeHandler(data, combinedToken, balanceSnapshotHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.INSTANT_ORDER_COMPLETED:
-                        {
-                            InvokeHandler(data, combinedToken, instantOrderCompleteHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.OPEN_ORDERS_UPDATE:
-                        {
-                            InvokeHandler(data, combinedToken, openOrderUpdateHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.NEW_ACCOUNT_TRADE:
-                        {
-                            InvokeHandler(data, combinedToken, newTradeHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.ORDER_PROCESSED:
-                        {
-                            InvokeHandler(data, combinedToken, orderProcessedHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.ORDER_STATUS_UPDATE:
-                        {
-                            InvokeHandler(data, combinedToken, orderUpdateHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.FAILED_CANCEL_ORDER:
-                        {
-                            InvokeHandler(data, combinedToken, failedOrderCancellationHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.NEW_PENDING_RECEIVE:
-                        {
-                            InvokeHandler(data, combinedToken, pendingCryptoDepositHandler);
-                            break;
-                        }
-                    case ValrSocketInboundEvent.SEND_STATUS_UPDATE:
-                        {
-                            InvokeHandler(data, combinedToken, cryptoWithdrawalStatusHandler);
-                            break;
-                        }
-                    default: return;
-                }
+                EventRoutingHandler(newTransactionHandler, balanceSnapshotHandler, balanceUpdateHandler, newTradeHandler, instantOrderCompleteHandler, openOrderUpdateHandler, orderProcessedHandler, orderUpdateHandler, failedOrderCancellationHandler, pendingCryptoDepositHandler, cryptoWithdrawalStatusHandler, parsedEventType, data, combinedToken);
             });
 
-            return await Subscribe(handler, ct,true).ConfigureAwait(false);
+            return await Subscribe(handler, ct, true).ConfigureAwait(false);
+        }
+
+        private void EventRoutingHandler(Action<DataEvent<NewTransactionPayload>> newTransactionHandler, Action<DataEvent<BalanceSnapshotPayload>> balanceSnapshotHandler,
+            Action<DataEvent<BalanceUpdatePayload>> balanceUpdateHandler, Action<DataEvent<NewTradePayload>> newTradeHandler, Action<DataEvent<InstantOrderCompletePayload>> instantOrderCompleteHandler,
+            Action<DataEvent<OpenOrderUpdatePayload>> openOrderUpdateHandler, Action<DataEvent<OrderProcessedPayload>> orderProcessedHandler, Action<DataEvent<OrderUpdatePayload>> orderUpdateHandler,
+            Action<DataEvent<FailedOrderCancellationPayload>> failedOrderCancellationHandler, Action<DataEvent<PendingCryptoDepositPayload>> pendingCryptoDepositHandler, Action<DataEvent<CryptoWithdrawalStatusPayload>> cryptoWithdrawalStatusHandler,
+            ValrSocketInboundEvent parsedEventType, DataEvent<string> data, JToken combinedToken)
+        {
+            switch (parsedEventType)
+            {
+                case ValrSocketInboundEvent.NEW_ACCOUNT_HISTORY_RECORD:
+                    {
+                        InvokeHandler(data, combinedToken, newTransactionHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.BALANCE_UPDATE:
+                    {
+                        InvokeHandler(data, combinedToken, balanceUpdateHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.BALANCE_SNAPSHOT:
+                    {
+                        InvokeHandler(data, combinedToken, balanceSnapshotHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.INSTANT_ORDER_COMPLETED:
+                    {
+                        InvokeHandler(data, combinedToken, instantOrderCompleteHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.OPEN_ORDERS_UPDATE:
+                    {
+                        InvokeHandler(data, combinedToken, openOrderUpdateHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.NEW_ACCOUNT_TRADE:
+                    {
+                        InvokeHandler(data, combinedToken, newTradeHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.ORDER_PROCESSED:
+                    {
+                        InvokeHandler(data, combinedToken, orderProcessedHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.ORDER_STATUS_UPDATE:
+                    {
+                        InvokeHandler(data, combinedToken, orderUpdateHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.FAILED_CANCEL_ORDER:
+                    {
+                        InvokeHandler(data, combinedToken, failedOrderCancellationHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.NEW_PENDING_RECEIVE:
+                    {
+                        InvokeHandler(data, combinedToken, pendingCryptoDepositHandler);
+                        break;
+                    }
+                case ValrSocketInboundEvent.SEND_STATUS_UPDATE:
+                    {
+                        InvokeHandler(data, combinedToken, cryptoWithdrawalStatusHandler);
+                        break;
+                    }
+                default: return;
+            }
         }
 
         public async Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(
@@ -133,7 +143,7 @@ namespace Valr.Net.Clients.GeneralApi
         /// <returns></returns>
         protected async Task<CallResult<UpdateSubscription>> Subscribe<T>(Action<DataEvent<T>> onData, CancellationToken ct, bool authenticated = false)
         {
-            return await _baseClient.SubscribeInternalNoRequest(this, BaseAddress, onData, ct, authenticated).ConfigureAwait(false);
+            return await _baseClient.SubscribeInternalNoRequest(this, _options.GeneralStreamsOptions.BaseAddress, onData, ct, authenticated).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

@@ -26,12 +26,10 @@ namespace Valr.Net.IntegrationTests
 
             _key = Configuration["key"];
             _secret = Configuration["secret"];
-
-            
         }
 
         [Test]
-        public async Task TestAccountSubsciption()
+        public async Task TestAccountSubscription()
         {
             _valrSocketCLient = new ValrSocketClient(new Objects.Options.ValrSocketClientOptions
             {
@@ -48,7 +46,53 @@ namespace Valr.Net.IntegrationTests
             Assert.IsTrue(result.Success);
         }
 
+        [Test]
+        public async Task TestAggregateOrderbookSubscription()
+        {
+            _valrSocketCLient = new ValrSocketClient(new Objects.Options.ValrSocketClientOptions
+            {
+                ApiCredentials = new ApiCredentials(_key, _secret),
+                SocketNoDataTimeout = TimeSpan.FromSeconds(10),
+                LogLevel = LogLevel.Trace,
+                AutoReconnect = true,
+                MaxReconnectTries = 5
+            });
+
+            var result = await _valrSocketCLient.SpotStreams.SubscribeToAggregateOrderbookUpdatesAsync("BTCZAR", ReadyResult);
+
+            await Task.Delay(TimeSpan.FromSeconds(60));
+            Assert.IsTrue(result.Success);
+        }
+
+        [Test]
+        public async Task TestFullOrderbookSubscription()
+        {
+            _valrSocketCLient = new ValrSocketClient(new Objects.Options.ValrSocketClientOptions
+            {
+                ApiCredentials = new ApiCredentials(_key, _secret),
+                SocketNoDataTimeout = TimeSpan.FromSeconds(10),
+                LogLevel = LogLevel.Trace,
+                AutoReconnect = true,
+                MaxReconnectTries = 5
+            });
+
+            var result = await _valrSocketCLient.SpotStreams.SubscribeToFullOrderbookUpdatesAsync("BTCZAR", SnapShotResult, UpdateResult);
+
+            await Task.Delay(TimeSpan.FromSeconds(60));
+            Assert.IsTrue(result.Success);
+        }
+
         private void ReadyResult(DataEvent<string> obj)
+        {
+            Console.WriteLine(obj.Data);
+        }
+
+        private void SnapShotResult(DataEvent<string> obj)
+        {
+            Console.WriteLine(obj.Data);
+        }
+
+        private void UpdateResult(DataEvent<string> obj)
         {
             Console.WriteLine(obj.Data);
         }

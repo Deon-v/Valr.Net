@@ -31,13 +31,13 @@ namespace Valr.Net.Objects.Models.Spot.Trading
         [JsonProperty("updatedAt")]
         private DateTime UpdatedAt
         {
-            set => Created = value;
+            set => LastUpdated = value;
         }
 
         [JsonProperty("createdAt")]
         private DateTime createdAt
         {
-            set => LastUpdated = value;
+            set => Created = value;
         }
     }
 }

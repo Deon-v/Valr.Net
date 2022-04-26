@@ -1,26 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Valr.Net.Enums;
 
 namespace Valr.Net.Objects.Models.General.Streams
 {
-    public class NewTradePayload
-    {
-        [JsonProperty("type")]
-        public ValrSocketInboundEvent PayloadType { get; set; }
-
-        [JsonProperty("currencyPairSymbol")]
-        public string Symbol { get; set; }
-
-        [JsonProperty("data")]
-        public NewTradeData Data { get; set; }
-    }
-
     public class NewTradeData
     {
         [JsonProperty("price")]

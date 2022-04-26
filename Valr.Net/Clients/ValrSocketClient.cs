@@ -61,7 +61,7 @@ namespace Valr.Net.Clients
         internal CallResult<T> DeserializeInternal<T>(JToken obj, JsonSerializer? serializer = null, int? requestId = null)
             => Deserialize<T>(obj, serializer, requestId);
 
-        internal Task<CallResult<UpdateSubscription>> SubscribeInternal<T>(SocketApiClient apiClient, string url, ValrSocketOutboundEvent _event, string pair, Action<DataEvent<T>> onData, CancellationToken ct, bool authenticated = false)
+        internal Task<CallResult<UpdateSubscription>> SubscribeInternal<T>(SocketApiClient apiClient, string url, ValrSocketOutboundEvent _event, string[] pair, Action<DataEvent<T>> onData, CancellationToken ct, bool authenticated = false)
         {
             var request = new ValrSocketRequest
             {
@@ -71,10 +71,8 @@ namespace Valr.Net.Clients
                     new Subscription
                     {
                         Event = _event,
-                        pairs = new[]
-                        {
-                            pair
-                        }
+                        pairs = pair
+
                     }
                 }
             };
@@ -85,7 +83,10 @@ namespace Valr.Net.Clients
         internal Task<CallResult<UpdateSubscription>> SubscribeInternalNoRequest<T>(SocketApiClient apiClient, string url, Action<DataEvent<T>> onData,
             CancellationToken ct, bool authenticated = false)
         {
-            return SubscribeAsync(apiClient, url, null, null, authenticated, onData, ct);
+            return SubscribeAsync(apiClient, url, new
+            {
+                type = "PING"
+            }, null, authenticated, onData, ct);
         }
 
         /// <inheritdoc />
@@ -105,8 +106,8 @@ namespace Valr.Net.Clients
             if (type == null)
                 return false;
 
-            var result = message["result"];
-            if (result != null && result.Type == JTokenType.Null)
+            var result = message["message"];
+            if (result != null && result.Type != JTokenType.Null)
             {
                 log.Write(LogLevel.Trace, $"Socket {s.Socket.Id} Subscription completed");
                 callResult = new CallResult<object>(new object());
@@ -130,12 +131,57 @@ namespace Valr.Net.Clients
             if (message.Type != JTokenType.Object)
                 return false;
 
-            var bRequest = (ValrSocketRequest)request;
-            var stream = message["type"]?.Value<ValrSocketOutboundEvent?>();
-            if (!stream.HasValue)
+            var parsedRequest = (ValrSocketRequest)request;
+            var stream = message["type"].Value<string>();
+
+            bool parsed = Enum.TryParse(stream, false, out ValrSocketInboundEvent inboundEvent);
+            ValrSocketOutboundEvent outboundEvent = parsedRequest.Subscriptions[0].Event;
+            if (!parsed)
                 return false;
 
-            return bRequest.Subscriptions.Select(s => s.Event).Contains(stream.Value);
+            return MatchInboundToOutboundEvents(outboundEvent, inboundEvent);
+        }
+
+        private static bool MatchInboundToOutboundEvents(ValrSocketOutboundEvent outboundEvent,
+            ValrSocketInboundEvent inboundEvent)
+        {
+            switch (outboundEvent)
+            {
+                case ValrSocketOutboundEvent.AGGREGATED_ORDERBOOK_UPDATE:
+                    {
+                        if (inboundEvent is ValrSocketInboundEvent.AGGREGATED_ORDERBOOK_SNAPSHOT or
+                            ValrSocketInboundEvent.AGGREGATED_ORDERBOOK_UPDATE)
+                            return true;
+                        break;
+                    }
+                case ValrSocketOutboundEvent.FULL_ORDERBOOK_UPDATE:
+                    {
+                        if (inboundEvent is ValrSocketInboundEvent.FULL_ORDERBOOK_SNAPSHOT
+                            or ValrSocketInboundEvent.FULL_ORDERBOOK_UPDATE)
+                            return true;
+                        break;
+                    }
+                case ValrSocketOutboundEvent.MARKET_SUMMARY_UPDATE:
+                    {
+                        if (inboundEvent is ValrSocketInboundEvent.MARKET_SUMMARY_UPDATE)
+                            return true;
+                        break;
+                    }
+                case ValrSocketOutboundEvent.NEW_TRADE_BUCKET:
+                    {
+                        if (inboundEvent is ValrSocketInboundEvent.NEW_TRADE_BUCKET)
+                            return true;
+                        break;
+                    }
+                case ValrSocketOutboundEvent.NEW_TRADE:
+                    {
+                        if (inboundEvent is ValrSocketInboundEvent.NEW_TRADE)
+                            return true;
+                        break;
+                    }
+            }
+
+            return false;
         }
 
         /// <inheritdoc />
