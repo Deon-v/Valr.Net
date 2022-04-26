@@ -7,6 +7,9 @@ using System;
 using System.Threading.Tasks;
 using Valr.Net.Clients;
 using Valr.Net.Interfaces.Clients;
+using Valr.Net.Objects.Models;
+using Valr.Net.Objects.Models.General.Streams;
+using Valr.Net.Objects.Models.Spot.Streams;
 
 namespace Valr.Net.IntegrationTests
 {
@@ -46,6 +49,11 @@ namespace Valr.Net.IntegrationTests
             Assert.IsTrue(result.Success);
         }
 
+        private void ReadyResult(DataEvent<string> obj)
+        {
+            Console.WriteLine(obj.Data);
+        }
+
         [Test]
         public async Task TestAggregateOrderbookSubscription()
         {
@@ -58,7 +66,10 @@ namespace Valr.Net.IntegrationTests
                 MaxReconnectTries = 5
             });
 
-            var result = await _valrSocketCLient.SpotStreams.SubscribeToAggregateOrderbookUpdatesAsync("BTCZAR", ReadyResult);
+            var result = await _valrSocketCLient.SpotStreams.SubscribeToAggregateOrderbookUpdatesAsync(new[]
+            {
+                "BTCZAR"
+            }, AggregateResult);
 
             await Task.Delay(TimeSpan.FromSeconds(60));
             Assert.IsTrue(result.Success);
@@ -76,23 +87,26 @@ namespace Valr.Net.IntegrationTests
                 MaxReconnectTries = 5
             });
 
-            var result = await _valrSocketCLient.SpotStreams.SubscribeToFullOrderbookUpdatesAsync("BTCZAR", SnapShotResult, UpdateResult);
+            var result = await _valrSocketCLient.SpotStreams.SubscribeToFullOrderbookUpdatesAsync(new[]
+            {
+                "BTCZAR"
+            }, SnapShotResult, UpdateResult);
 
             await Task.Delay(TimeSpan.FromSeconds(60));
             Assert.IsTrue(result.Success);
         }
 
-        private void ReadyResult(DataEvent<string> obj)
+        private void AggregateResult(DataEvent<InboundStreamPayload<AggregateOrderBookData>> obj)
         {
             Console.WriteLine(obj.Data);
         }
 
-        private void SnapShotResult(DataEvent<string> obj)
+        private void SnapShotResult(DataEvent<InboundStreamPayload<FullOrderBookData>> obj)
         {
             Console.WriteLine(obj.Data);
         }
 
-        private void UpdateResult(DataEvent<string> obj)
+        private void UpdateResult(DataEvent<InboundStreamPayload<FullOrderBookData>> obj)
         {
             Console.WriteLine(obj.Data);
         }

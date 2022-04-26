@@ -28,8 +28,8 @@ public interface IValrSocketClientGeneralStreams : IDisposable
         Action<DataEvent<InboundStreamPayload<CryptoWithdrawalStatusData>>> balanceSnapshotHandler,
         Action<DataEvent<InboundStreamPayload<BalanceUpdateData>>> balanceUpdateHandler,
         Action<DataEvent<InboundStreamPayload<NewTradeData>>> newTradeHandler,
-        Action<DataEvent<InboundStreamPayload<InstantOrderCompleteData>>> instantOrderCompleteHandler,//
-        Action<DataEvent<InboundStreamPayload<OpenOrderData>>> openOrderUpdateHandler,
+        Action<DataEvent<InboundStreamPayload<InstantOrderCompleteData>>> instantOrderCompleteHandler,
+        Action<DataEvent<InboundStreamPayload<OpenOrderData[]>>> openOrderUpdateHandler,
         Action<DataEvent<InboundStreamPayload<ProcessedOrderData>>> orderProcessedHandler,
         Action<DataEvent<InboundStreamPayload<OrderUpdateData>>> orderUpdateHandler,
         Action<DataEvent<InboundStreamPayload<FailedOrderCancellationData>>> failedOrderCancellationHandler,

@@ -29,7 +29,7 @@ namespace Valr.Net.Objects.Models.General.Streams
         public DateTime TransactionDate { get; set; }
 
         [JsonProperty("additionalInfo")]
-        public Additionalinfo Additionalinfo { get; set; }
+        public Additionalinfo AdditionalInfo { get; set; }
 
     }
 

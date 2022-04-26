@@ -1,13 +1,28 @@
-﻿namespace Valr.Net.Objects.Models.General.Streams
+﻿using Newtonsoft.Json;
+
+namespace Valr.Net.Objects.Models.General.Streams
 {
     public class PendingCryptoDepositData
     {
-        public CurrencyInfo currency { get; set; }
-        public string receiveAddress { get; set; }
-        public string transactionHash { get; set; }
-        public float amount { get; set; }
-        public DateTime createdAt { get; set; }
-        public int confirmations { get; set; }
-        public bool confirmed { get; set; }
+        [JsonProperty("currency")]
+        public CurrencyInfo Currency { get; set; }
+
+        [JsonProperty("receiveAddress")]
+        public string ReceiveAddress { get; set; }
+
+        [JsonProperty("transactionHash")]
+        public string TransactionHash { get; set; }
+
+        [JsonProperty("amount")]
+        public decimal Amount { get; set; }
+
+        [JsonProperty("createdAt")]
+        public DateTime Created { get; set; }
+
+        [JsonProperty("confirmations")]
+        public int Confirmations { get; set; }
+
+        [JsonProperty("confirmed")]
+        public bool Confirmed { get; set; }
     }
 }

@@ -6,6 +6,8 @@ using CryptoExchange.Net.Sockets;
 using Newtonsoft.Json.Linq;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.SpotApi;
+using Valr.Net.Objects.Models;
+using Valr.Net.Objects.Models.Spot.Streams;
 using Valr.Net.Objects.Options;
 
 namespace Valr.Net.Clients.SpotApi
@@ -31,13 +33,13 @@ namespace Valr.Net.Clients.SpotApi
             _options = options;
         }
 
-        public async Task<CallResult<UpdateSubscription>> SubscribeToAggregateOrderbookUpdatesAsync(string[] symbol, Action<DataEvent<string>> stringHandler, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToAggregateOrderbookUpdatesAsync(string[] symbol, Action<DataEvent<InboundStreamPayload<AggregateOrderBookData>>> stringHandler, CancellationToken ct = default)
         {
             return await Subscribe(ValrSocketOutboundEvent.AGGREGATED_ORDERBOOK_UPDATE, symbol, stringHandler, ct).ConfigureAwait(false);
         }
 
-        public async Task<CallResult<UpdateSubscription>> SubscribeToFullOrderbookUpdatesAsync(string[] symbol, Action<DataEvent<string>> snapShotHandler, Action<DataEvent<string>> updateHandler,
-            CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToFullOrderbookUpdatesAsync(string[] symbol, Action<DataEvent<InboundStreamPayload<FullOrderBookData>>> snapShotHandler,
+            Action<DataEvent<InboundStreamPayload<FullOrderBookData>>> updateHandler, CancellationToken ct = default)
         {
             var handler = new Action<DataEvent<string>>(data =>
             {
@@ -53,7 +55,7 @@ namespace Valr.Net.Clients.SpotApi
             return await Subscribe(ValrSocketOutboundEvent.FULL_ORDERBOOK_UPDATE, symbol, handler, ct).ConfigureAwait(false);
         }
 
-        private void RouteFullOrderBookEvent(Action<DataEvent<string>> snapShotHandler, Action<DataEvent<string>> updateHandler,
+        private void RouteFullOrderBookEvent(Action<DataEvent<InboundStreamPayload<FullOrderBookData>>> snapShotHandler, Action<DataEvent<InboundStreamPayload<FullOrderBookData>>> updateHandler,
             ValrSocketInboundEvent parsedEventType, DataEvent<string> data, JToken combinedToken)
         {
             switch (parsedEventType)
@@ -71,17 +73,17 @@ namespace Valr.Net.Clients.SpotApi
             }
         }
 
-        public async Task<CallResult<UpdateSubscription>> SubscribeToMarketSummaryUpdatesAsync(string[] symbol, Action<DataEvent<string>> stringHandler, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToMarketSummaryUpdatesAsync(string[] symbol, Action<DataEvent<InboundStreamPayload<MarketSummaryData>>> stringHandler, CancellationToken ct = default)
         {
             return await Subscribe(ValrSocketOutboundEvent.MARKET_SUMMARY_UPDATE, symbol, stringHandler, ct).ConfigureAwait(false);
         }
 
-        public async Task<CallResult<UpdateSubscription>> SubscribeToNewTradeBucketUpdatesAsync(string[] symbol, Action<DataEvent<string>> stringHandler, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToNewTradeBucketUpdatesAsync(string[] symbol, Action<DataEvent<InboundStreamPayload<NewTradeBucketData>>> stringHandler, CancellationToken ct = default)
         {
             return await Subscribe(ValrSocketOutboundEvent.NEW_TRADE_BUCKET, symbol, stringHandler, ct).ConfigureAwait(false);
         }
 
-        public async Task<CallResult<UpdateSubscription>> SubscribeToNewTradeUpdatesAsync(string[] symbol, Action<DataEvent<string>> stringHandler, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToNewTradeUpdatesAsync(string[] symbol, Action<DataEvent<InboundStreamPayload<NewTradeData>>> stringHandler, CancellationToken ct = default)
         {
             return await Subscribe(ValrSocketOutboundEvent.NEW_TRADE, symbol, stringHandler, ct).ConfigureAwait(false);
         }

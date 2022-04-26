@@ -6,6 +6,8 @@ using CryptoExchange.Net.Sockets;
 using Newtonsoft.Json.Linq;
 using Valr.Net.Enums;
 using Valr.Net.Interfaces.Clients.GeneralApi;
+using Valr.Net.Objects.Models;
+using Valr.Net.Objects.Models.General.Streams;
 using Valr.Net.Objects.Options;
 
 namespace Valr.Net.Clients.GeneralApi
@@ -33,17 +35,17 @@ namespace Valr.Net.Clients.GeneralApi
         #endregion
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(Action<DataEvent<NewTransactionPayload>> newTransactionHandler,
-            Action<DataEvent<BalanceSnapshotPayload>> balanceSnapshotHandler,
-            Action<DataEvent<BalanceUpdatePayload>> balanceUpdateHandler,
-            Action<DataEvent<NewTradePayload>> newTradeHandler,
-            Action<DataEvent<InstantOrderCompletePayload>> instantOrderCompleteHandler,
-            Action<DataEvent<OpenOrderUpdatePayload>> openOrderUpdateHandler,
-            Action<DataEvent<OrderProcessedPayload>> orderProcessedHandler,
-            Action<DataEvent<OrderUpdatePayload>> orderUpdateHandler,
-            Action<DataEvent<FailedOrderCancellationPayload>> failedOrderCancellationHandler,
-            Action<DataEvent<PendingCryptoDepositPayload>> pendingCryptoDepositHandler,
-            Action<DataEvent<CryptoWithdrawalStatusPayload>> cryptoWithdrawalStatusHandler,
+        public async Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(Action<DataEvent<InboundStreamPayload<NewTransactionData>>> newTransactionHandler,
+            Action<DataEvent<InboundStreamPayload<CryptoWithdrawalStatusData>>> balanceSnapshotHandler,
+            Action<DataEvent<InboundStreamPayload<BalanceUpdateData>>> balanceUpdateHandler,
+            Action<DataEvent<InboundStreamPayload<NewTradeData>>> newTradeHandler,
+            Action<DataEvent<InboundStreamPayload<InstantOrderCompleteData>>> instantOrderCompleteHandler,
+            Action<DataEvent<InboundStreamPayload<OpenOrderData[]>>> openOrderUpdateHandler,
+            Action<DataEvent<InboundStreamPayload<ProcessedOrderData>>> orderProcessedHandler,
+            Action<DataEvent<InboundStreamPayload<OrderUpdateData>>> orderUpdateHandler,
+            Action<DataEvent<InboundStreamPayload<FailedOrderCancellationData>>> failedOrderCancellationHandler,
+            Action<DataEvent<InboundStreamPayload<PendingCryptoDepositData>>> pendingCryptoDepositHandler,
+            Action<DataEvent<InboundStreamPayload<CryptoWithdrawalStatusData>>> cryptoWithdrawalStatusHandler,
             CancellationToken ct = default)
         {
             var handler = new Action<DataEvent<string>>(data =>
@@ -60,10 +62,17 @@ namespace Valr.Net.Clients.GeneralApi
             return await Subscribe(handler, ct, true).ConfigureAwait(false);
         }
 
-        private void EventRoutingHandler(Action<DataEvent<NewTransactionPayload>> newTransactionHandler, Action<DataEvent<BalanceSnapshotPayload>> balanceSnapshotHandler,
-            Action<DataEvent<BalanceUpdatePayload>> balanceUpdateHandler, Action<DataEvent<NewTradePayload>> newTradeHandler, Action<DataEvent<InstantOrderCompletePayload>> instantOrderCompleteHandler,
-            Action<DataEvent<OpenOrderUpdatePayload>> openOrderUpdateHandler, Action<DataEvent<OrderProcessedPayload>> orderProcessedHandler, Action<DataEvent<OrderUpdatePayload>> orderUpdateHandler,
-            Action<DataEvent<FailedOrderCancellationPayload>> failedOrderCancellationHandler, Action<DataEvent<PendingCryptoDepositPayload>> pendingCryptoDepositHandler, Action<DataEvent<CryptoWithdrawalStatusPayload>> cryptoWithdrawalStatusHandler,
+        private void EventRoutingHandler(Action<DataEvent<InboundStreamPayload<NewTransactionData>>> newTransactionHandler,
+            Action<DataEvent<InboundStreamPayload<CryptoWithdrawalStatusData>>> balanceSnapshotHandler,
+            Action<DataEvent<InboundStreamPayload<BalanceUpdateData>>> balanceUpdateHandler,
+            Action<DataEvent<InboundStreamPayload<NewTradeData>>> newTradeHandler,
+            Action<DataEvent<InboundStreamPayload<InstantOrderCompleteData>>> instantOrderCompleteHandler,
+            Action<DataEvent<InboundStreamPayload<OpenOrderData[]>>> openOrderUpdateHandler,
+            Action<DataEvent<InboundStreamPayload<ProcessedOrderData>>> orderProcessedHandler,
+            Action<DataEvent<InboundStreamPayload<OrderUpdateData>>> orderUpdateHandler,
+            Action<DataEvent<InboundStreamPayload<FailedOrderCancellationData>>> failedOrderCancellationHandler,
+            Action<DataEvent<InboundStreamPayload<PendingCryptoDepositData>>> pendingCryptoDepositHandler,
+            Action<DataEvent<InboundStreamPayload<CryptoWithdrawalStatusData>>> cryptoWithdrawalStatusHandler,
             ValrSocketInboundEvent parsedEventType, DataEvent<string> data, JToken combinedToken)
         {
             switch (parsedEventType)

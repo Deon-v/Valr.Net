@@ -23,7 +23,7 @@ namespace Valr.Net.Objects.Models.General.Streams
         public ValrOrderSide Side { get; set; }
 
         [JsonProperty("orderId")]
-        public string OrderId { get; set; }
+        public Guid OrderId { get; set; }
 
         [JsonProperty("id")]
         public Guid Id { get; set; }
