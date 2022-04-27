@@ -37,7 +37,7 @@ namespace Valr.Net.IntegrationTests
             _valrSocketCLient = new ValrSocketClient(new Objects.Options.ValrSocketClientOptions
             {
                 ApiCredentials = new ApiCredentials(_key, _secret),
-                SocketNoDataTimeout = TimeSpan.FromSeconds(10),
+                SocketNoDataTimeout = TimeSpan.FromSeconds(30),
                 LogLevel = LogLevel.Trace,
                 AutoReconnect = true,
                 MaxReconnectTries = 5
@@ -45,13 +45,7 @@ namespace Valr.Net.IntegrationTests
 
             var result = await _valrSocketCLient.GeneralStreams.SubscribeToAccountUpdatesAsync(ReadyResult);
 
-            await Task.Delay(TimeSpan.FromSeconds(10));
             Assert.IsTrue(result.Success);
-        }
-
-        private void ReadyResult(DataEvent<string> obj)
-        {
-            Console.WriteLine(obj.Data);
         }
 
         [Test]
@@ -71,7 +65,6 @@ namespace Valr.Net.IntegrationTests
                 "BTCZAR"
             }, AggregateResult);
 
-            await Task.Delay(TimeSpan.FromSeconds(60));
             Assert.IsTrue(result.Success);
         }
 
@@ -92,8 +85,12 @@ namespace Valr.Net.IntegrationTests
                 "BTCZAR"
             }, SnapShotResult, UpdateResult);
 
-            await Task.Delay(TimeSpan.FromSeconds(60));
             Assert.IsTrue(result.Success);
+        }
+
+        private void ReadyResult(DataEvent<string> obj)
+        {
+            Console.WriteLine(obj.Data);
         }
 
         private void AggregateResult(DataEvent<InboundStreamPayload<AggregateOrderBookData>> obj)
