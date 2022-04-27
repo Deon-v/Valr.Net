@@ -5,10 +5,7 @@ Valr.Net is a wrapper for the Varl API as found on [Valr](https://docs.valr.com/
 The library relies on [CryptoExchange.Net](https://github.com/JKorf/CryptoExchange.Net), please support [Jan Korf](https://github.com/JKorf) for all his hard work.
 
 ## Status
-This library is currently in development and about 60% complete.
-The Rest API portion has been implemented 100% and needs to be tested.
-
-The Websockets will be implemented in the next week.
+The libary has been complete with all the basics to connect with the exchange, there is currently an issue with the account websockets where the connection is being closed as soon as it is established.
 
 ## Donate / Sponsor
 
