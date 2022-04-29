@@ -22,5 +22,7 @@ namespace Valr.Net.Objects.Models.Spot.Trading
 
         [JsonProperty("timeInForce")]
         public ValrTimeInforce TimeInForce { get; set; }
+
+        public decimal QuantityFilled => OriginalQuantity - RemainingQuantity;
     }
 }

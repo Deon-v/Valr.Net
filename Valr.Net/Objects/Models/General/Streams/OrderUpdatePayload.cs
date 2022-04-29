@@ -43,5 +43,7 @@ namespace Valr.Net.Objects.Models.General.Streams
 
         [JsonProperty("customerOrderId")]
         public string? CustomerOrderId { get; set; }
+
+        public decimal QuantityFilled => OriginalQuantity - RemainingQuantity;
     }
 }

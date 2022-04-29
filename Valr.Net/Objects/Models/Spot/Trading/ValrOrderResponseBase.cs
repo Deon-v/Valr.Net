@@ -36,5 +36,7 @@ namespace Valr.Net.Objects.Models.Spot.Trading
 
         [JsonProperty("orderCreatedAt")]
         public DateTime Created { get; set; }
+
+        public decimal QuantityFilled => OriginalQuantity - RemainingQuantity;
     }
 }

@@ -146,5 +146,20 @@ namespace Valr.Net.UnitTests
                 Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");
             }
         }
+
+        [Test]
+        public async Task RecieveSuccesCodeAndEmptyBody_Should_ReturnSuccess()
+        {
+            // arrange
+            var client = ValrClientHelpers.CreateClient(new ValrClientOptions { ApiCredentials = new ApiCredentials(_key, _secret), LogLevel = LogLevel.Trace });
+            ValrClientHelpers.SetResponse(client, "");
+
+            // act
+            var result = await client.SpotApi.Spot.CancelOrderAsync(Guid.NewGuid(), "BTCZAR");
+
+            // assert
+            Assert.IsTrue(result.Success);
+            Assert.IsNull(result.Error);
+        }
     }
 }
