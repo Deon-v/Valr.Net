@@ -16,7 +16,7 @@ public class AggregateOrderBookData
     public DateTime LastChange { get; set; }
 
     [JsonProperty("SequenceNumber")]
-    public int SequenceNumber { get; set; }
+    public long SequenceNumber { get; set; }
 }
 
 public class AggregateOrder
