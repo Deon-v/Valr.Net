@@ -81,6 +81,19 @@ namespace Valr.Net.Clients.SpotApi
             return result;
         }
 
+        internal async Task<WebCallResult> SendRequestInternal(Uri uri, HttpMethod method, CancellationToken cancellationToken,
+            Dictionary<string, object>? parameters = null, bool signed = false, HttpMethodParameterPosition? postPosition = null,
+            ArrayParametersSerialization? arraySerialization = null, int weight = 1, bool ignoreRateLimit = false)
+        {
+            var result = await _baseClient.SendRequestInternal(this, uri, method, cancellationToken, parameters, signed, postPosition, arraySerialization, weight, ignoreRateLimit: ignoreRateLimit).ConfigureAwait(false);
+            if (!result && result.Error!.Code == -1021 && Options.SpotApiOptions.AutoTimestamp)
+            {
+                _log.Write(LogLevel.Debug, "Received Invalid Timestamp error, triggering new time sync");
+                TimeSyncState.LastSyncTime = DateTime.MinValue;
+            }
+            return result;
+        }
+
         #endregion
 
         #region RestApi Client
@@ -159,6 +172,7 @@ namespace Valr.Net.Clients.SpotApi
         /// <returns></returns>
         string IBaseRestClient.GetSymbolName(string baseAsset, string quoteAsset) => (baseAsset + quoteAsset).ToUpperInvariant();
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<Symbol>>> IBaseRestClient.GetSymbolsAsync(CancellationToken ct)
         {
             var exchangeInfo = await _baseClient.GeneralApi.ExchangeData.GetSupportedPairsAsync();
@@ -176,6 +190,7 @@ namespace Valr.Net.Clients.SpotApi
             }));
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<Ticker>> IBaseRestClient.GetTickerAsync(string symbol, CancellationToken ct)
         {
             var asset = await _baseClient.GeneralApi.ExchangeData.GetMarketSummaryForPairAsync(symbol);
@@ -197,6 +212,7 @@ namespace Valr.Net.Clients.SpotApi
             });
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<Ticker>>> IBaseRestClient.GetTickersAsync(CancellationToken ct)
         {
             var asset = await _baseClient.GeneralApi.ExchangeData.GetMarketSummariesAsync();
@@ -216,11 +232,13 @@ namespace Valr.Net.Clients.SpotApi
             }));
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<Kline>>> IBaseRestClient.GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime, DateTime? endTime, int? limit, CancellationToken ct)
         {
             throw new NotImplementedException("Valr does not support KLines at the moment");
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<OrderBook>> IBaseRestClient.GetOrderBookAsync(string symbol, CancellationToken ct)
         {
             var book = await _baseClient.GeneralApi.ExchangeData.GetPublicOrderBookFullAsync(symbol);
@@ -238,6 +256,7 @@ namespace Valr.Net.Clients.SpotApi
             });
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<Trade>>> IBaseRestClient.GetRecentTradesAsync(string symbol, CancellationToken ct)
         {
             var trades = await _baseClient.GeneralApi.ExchangeData.GetTradeHistoryAsync(symbol);
@@ -255,6 +274,7 @@ namespace Valr.Net.Clients.SpotApi
             }));
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<Balance>>> IBaseRestClient.GetBalancesAsync(string? accountId, CancellationToken ct)
         {
             var balances = await _baseClient.GeneralApi.Account.GetAccountBalancesAsync();
@@ -272,6 +292,7 @@ namespace Valr.Net.Clients.SpotApi
             }));
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<Order>> IBaseRestClient.GetOrderAsync(string orderId, string? symbol, CancellationToken ct)
         {
             var order = await _baseClient.SpotApi.Spot.GetOrderStatusAsync(symbol, Guid.Parse(orderId));
@@ -296,11 +317,13 @@ namespace Valr.Net.Clients.SpotApi
             });
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<UserTrade>>> IBaseRestClient.GetOrderTradesAsync(string orderId, string? symbol, CancellationToken ct)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<Order>>> IBaseRestClient.GetOpenOrdersAsync(string? symbol, CancellationToken ct)
         {
             var orders = await _baseClient.SpotApi.Spot.GetOpenOrderAsync();
@@ -329,6 +352,7 @@ namespace Valr.Net.Clients.SpotApi
             }));
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<IEnumerable<Order>>> IBaseRestClient.GetClosedOrdersAsync(string? symbol, CancellationToken ct)
         {
             var orders = await _baseClient.SpotApi.Spot.GetOrderHistoryAsync();
@@ -361,6 +385,7 @@ namespace Valr.Net.Clients.SpotApi
                 }));
         }
 
+        /// <inheritdoc />
         async Task<WebCallResult<OrderId>> IBaseRestClient.CancelOrderAsync(string orderId, string? symbol, CancellationToken ct)
         {
             var result = await _baseClient.SpotApi.Spot.CancelOrderAsync(Guid.Parse(orderId), symbol);

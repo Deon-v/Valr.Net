@@ -20,26 +20,26 @@ namespace Valr.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<object>> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult> CancelOrderAsync(Guid id, string symbol, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddParameter("orderId", id);
             parameters.AddParameter("pair", symbol);
 
-            var result = await _baseClient.SendRequestInternal<object>(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
+            var result = await _baseClient.SendRequestInternal(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
                 HttpMethod.Delete, ct, signed: true, parameters: parameters).ConfigureAwait(false);
 
             return result;
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<object>> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult> CancelOrderAsync(int clientOrderId, string symbol, long? receiveWindow = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddParameter("customerOrderId", clientOrderId);
             parameters.AddParameter("pair", symbol);
 
-            var result = await _baseClient.SendRequestInternal<object>(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
+            var result = await _baseClient.SendRequestInternal(_baseClient.GetUrl(TradingEndpoints.DeleteOrder),
                 HttpMethod.Delete, ct, signed: true, parameters: parameters).ConfigureAwait(false);
 
             return result;

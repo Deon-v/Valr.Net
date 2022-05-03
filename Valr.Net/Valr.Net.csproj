@@ -30,7 +30,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="LICENSE" Pack="true" PackagePath=""/>
+		<None Include="LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup> 
 	
 
@@ -40,7 +40,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CryptoExchange.Net" Version="5.1.7" />
+		<PackageReference Include="CryptoExchange.Net" Version="5.1.8" />
 	</ItemGroup>
 
 </Project>
