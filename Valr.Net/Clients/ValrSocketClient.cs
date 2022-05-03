@@ -109,7 +109,7 @@ namespace Valr.Net.Clients
             var result = message["message"];
             if (result != null && result.Type != JTokenType.Null)
             {
-                log.Write(LogLevel.Trace, $"Socket {s.Socket.Id} Subscription completed");
+                log.Write(LogLevel.Trace, $"Socket {s.SocketId} Subscription completed");
                 callResult = new CallResult<object>(new object());
                 return true;
             }
@@ -209,13 +209,13 @@ namespace Valr.Net.Clients
         /// <returns></returns>
         protected override SocketConnection GetSocketConnection(SocketApiClient apiClient, string address, bool authenticated)
         {
-            var socketResult = sockets.Where(s => s.Value.Socket.Url.TrimEnd('/') == address.TrimEnd('/')
-                                                  && (s.Value.ApiClient.GetType() == apiClient.GetType())
-                                                  && (s.Value.Authenticated == authenticated || !authenticated) && s.Value.Connected).OrderBy(s => s.Value.SubscriptionCount).FirstOrDefault();
+            var socketResult = socketConnections.Where(s => s.Value.GetSocket().Uri.ToString().TrimEnd('/') == address.TrimEnd('/')
+                                                            && (s.Value.ApiClient.GetType() == apiClient.GetType())
+                                                            && (s.Value.Authenticated == authenticated || !authenticated) && s.Value.Connected).OrderBy(s => s.Value.SubscriptionCount).FirstOrDefault();
             var result = socketResult.Equals(default(KeyValuePair<int, SocketConnection>)) ? null : socketResult.Value;
             if (result != null)
             {
-                if (result.SubscriptionCount < ClientOptions.SocketSubscriptionsCombineTarget || (sockets.Count >= MaxSocketConnections && sockets.All(s => s.Value.SubscriptionCount >= ClientOptions.SocketSubscriptionsCombineTarget)))
+                if (result.SubscriptionCount < ClientOptions.SocketSubscriptionsCombineTarget || (socketConnections.Count >= MaxSocketConnections && socketConnections.All(s => s.Value.SubscriptionCount >= ClientOptions.SocketSubscriptionsCombineTarget)))
                 {
                     // Use existing socket if it has less than target connections OR it has the least connections and we can't make new
                     return result;
@@ -280,7 +280,7 @@ namespace Valr.Net.Clients
             var unsub = new ValrSocketRequest { EventType = ValrSocketEventType.SUBSCRIBE, Subscriptions = Array.Empty<Subscription>() };
             var result = false;
 
-            if (!connection.Socket.IsOpen)
+            if (!connection.GetSocket().IsOpen)
                 return true;
 
             await connection.SendAndWaitAsync(unsub, ClientOptions.SocketResponseTimeout, data =>

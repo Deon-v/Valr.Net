@@ -389,8 +389,13 @@ namespace Valr.Net.Clients.SpotApi
         async Task<WebCallResult<OrderId>> IBaseRestClient.CancelOrderAsync(string orderId, string? symbol, CancellationToken ct)
         {
             var result = await _baseClient.SpotApi.Spot.CancelOrderAsync(Guid.Parse(orderId), symbol);
-
-            return result.As<OrderId>(new OrderId { Id = orderId });
+            if (result.Success)
+            {
+                return new WebCallResult<OrderId>(result.ResponseStatusCode, result.ResponseHeaders,
+                    result.ResponseTime, null, result.RequestUrl, null, HttpMethod.Delete, result.RequestHeaders, new OrderId { Id = orderId }, null);
+            }
+            return new WebCallResult<OrderId>(result.ResponseStatusCode, result.ResponseHeaders,
+                result.ResponseTime, null, result.RequestUrl, null, HttpMethod.Delete, result.RequestHeaders, null, result.Error);
         }
         #endregion
 
