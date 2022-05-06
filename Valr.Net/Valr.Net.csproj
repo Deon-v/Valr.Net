@@ -37,6 +37,7 @@
 
 	<ItemGroup>
 		<Folder Include="Icon\" />
+		<Folder Include="SymbolOrderBooks\" />
 	</ItemGroup>
 
 	<ItemGroup>
