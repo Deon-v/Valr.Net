@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CryptoExchange.Net.Interfaces;
+﻿using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using Valr.Net.Objects.Models;
 using Valr.Net.Objects.Models.Spot.Streams;
 using Valr.Net.Objects.Options;
-using Valr.Net.SymbolOrderBooks;
 
 namespace Valr.Net.OrderBooks
 {

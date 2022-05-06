@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CryptoExchange.Net.CommonObjects;
-using CryptoExchange.Net.Interfaces;
+﻿using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using Valr.Net.Clients;
 using Valr.Net.Interfaces.Clients;
 using Valr.Net.Objects.Models;
 using Valr.Net.Objects.Models.Spot.Streams;
 using Valr.Net.Objects.Options;
-using Valr.Net.OrderBooks;
 
-namespace Valr.Net.SymbolOrderBooks
+namespace Valr.Net.OrderBooks
 {
     /// <inheritdoc/>
     public class ValrSpotSymbolOrderBookAggregated : IValrSpotSymbolOrderBookAggregated, IDisposable
@@ -28,20 +20,12 @@ namespace Valr.Net.SymbolOrderBooks
         private readonly TimeSpan _initialDataTimeout;
         private readonly bool _restOwner;
         private readonly bool _socketOwner;
-
-        private CancellationTokenSource? _cts;
-
-        /// <summary>
-        /// The log
-        /// </summary>
-        protected Log log;
-
-        private readonly string[] Symbols;
         private readonly ValrOrderBookOptions _options;
+        private readonly ConcurrentDictionary<string, IValrSymbolOrderbook> _orderBooks;
+        private CancellationTokenSource? _cts;
         private UpdateSubscription? _subscription;
         private const string _id = "Valr[Spot]";
-
-        private readonly ConcurrentDictionary<string, IValrSymbolOrderbook> _orderBooks;
+        protected Log log;
 
         public ValrSpotSymbolOrderBookAggregated(string[] symbols, ValrOrderBookOptions? options = null)
         {
@@ -60,6 +44,9 @@ namespace Valr.Net.SymbolOrderBooks
             var writers = options.LogWriters ?? new List<ILogger> { new DebugLogger() };
             log.UpdateWriters(writers.ToList());
         }
+
+        /// <inheritdoc/>
+        public string[] Symbols { get; }
 
         /// <inheritdoc/>
         public async Task<CallResult<bool>> StartAsync(CancellationToken? ct = null)

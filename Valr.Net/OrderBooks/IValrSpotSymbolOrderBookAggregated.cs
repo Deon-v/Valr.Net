@@ -1,7 +1,7 @@
 ﻿using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 
-namespace Valr.Net.SymbolOrderBooks;
+namespace Valr.Net.OrderBooks;
 
 /// <summary>
 /// Implementation for a synchronized order book. After calling Start the order book will sync itself and keep up to date with new data. It will automatically try to reconnect and resync in case of a lost/interrupted connection.
@@ -9,6 +9,11 @@ namespace Valr.Net.SymbolOrderBooks;
 /// </summary>
 public interface IValrSpotSymbolOrderBookAggregated
 {
+    /// <summary>
+    /// The list of Symbols that order books are being synced for
+    /// </summary>
+    string[] Symbols { get; }
+
     /// <summary>
     /// Start connecting and synchronizing the order book
     /// </summary>

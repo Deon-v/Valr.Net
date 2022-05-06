@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Valr.Net.OrderBooks
+﻿namespace Valr.Net.OrderBooks
 {
     internal class DescComparer<T> : IComparer<T>
     {

@@ -3,6 +3,7 @@ using Valr.Net.Interfaces.Clients;
 
 namespace Valr.Net.Objects.Options
 {
+    /// <inheritdoc/>
     public class ValrOrderBookOptions : OrderBookOptions
     {
         /// <summary>
