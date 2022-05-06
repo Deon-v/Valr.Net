@@ -18,27 +18,35 @@ public interface IValrSpotSymbolOrderBookAggregated
     /// Start connecting and synchronizing the order book
     /// </summary>
     /// <param name="ct">A cancellation token to stop the order book when canceled</param>
-    /// <returns></returns>
+    /// <returns>Success or failure</returns>
     Task<CallResult<bool>> StartAsync(CancellationToken? ct = null);
 
     /// <summary>
     /// Stop syncing the order book
     /// </summary>
-    /// <returns></returns>
     Task StopAsync();
 
     /// <summary>
-    /// The list of asks
+    /// The list of asks for a symbol
     /// </summary>
-    IEnumerable<ISymbolOrderBookEntry> GetAsks(string symbol);
+    ///  <param name="symbol">The symbol to retrieve the asks for</param>
+    /// <param name="onlySynced">Should the data only be return if it's synced</param>
+    /// <returns>A list of asks</returns>
+    IEnumerable<ISymbolOrderBookEntry> GetAsks(string symbol, bool onlySynced = false);
 
     /// <summary>
-    /// The list of bids
+    /// The list of bids for a symbol
     /// </summary>
-    IEnumerable<ISymbolOrderBookEntry> GetBids(string symbol);
+    /// <param name="symbol">The symbol to retrieve the bids for</param>
+    /// <param name="onlySynced">Should the data only be return if it's synced</param>
+    /// <returns>A list of bids</returns>
+    IEnumerable<ISymbolOrderBookEntry> GetBids(string symbol, bool onlySynced = false);
 
     /// <summary>
     /// Get a snapshot of the book at this moment
     /// </summary>
-    (IEnumerable<ISymbolOrderBookEntry> bids, IEnumerable<ISymbolOrderBookEntry> asks) GetBook(string symbol);
+    /// <param name="symbol">The symbol to retrieve the bids and asks for</param>
+    /// <param name="onlySynced">Should the data only be return if it's synced</param>
+    /// <returns>A list of bids</returns>
+    (IEnumerable<ISymbolOrderBookEntry> bids, IEnumerable<ISymbolOrderBookEntry> asks) GetBook(string symbol, bool onlySynced = false);
 }

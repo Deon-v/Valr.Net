@@ -12,7 +12,7 @@
 		<PackageDescription>An wrapper to connect the Valr Exchange API and Websokets</PackageDescription>
 		<RepositoryUrl>https://github.com/Deon-v/Valr.Net</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/Deon-v/Valr.Net</PackageProjectUrl>
-		<PackageReleaseNotes>First Release</PackageReleaseNotes>
+		<PackageReleaseNotes>Complete syncronized orderbook implementation</PackageReleaseNotes>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<Title>Valr.Net</Title>
 		<RepositoryType>Git</RepositoryType>
@@ -21,7 +21,7 @@
 	<PropertyGroup>
 		<VersionMajor>1</VersionMajor>
 		<VersionMinor>0</VersionMinor>
-		<VersionPatch>4</VersionPatch>
+		<VersionPatch>5</VersionPatch>
 	</PropertyGroup>
 
 	<PropertyGroup>

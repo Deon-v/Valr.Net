@@ -132,21 +132,33 @@ namespace Valr.Net.OrderBooks
         }
 
         /// <inheritdoc/>
-        public IEnumerable<ISymbolOrderBookEntry> GetAsks(string symbol)
+        public IEnumerable<ISymbolOrderBookEntry> GetAsks(string symbol, bool onlySynced = false)
         {
-            return _orderBooks[symbol].Asks;
+            var book = _orderBooks[symbol];
+            if (onlySynced && book.Status != OrderBookStatus.Synced)
+            {
+                return Enumerable.Empty<ISymbolOrderBookEntry>();
+            }
+
+            return book.Asks;
         }
 
         /// <inheritdoc/>
-        public IEnumerable<ISymbolOrderBookEntry> GetBids(string symbol)
+        public IEnumerable<ISymbolOrderBookEntry> GetBids(string symbol, bool onlySynced = false)
         {
-            return _orderBooks[symbol].Bids;
+            var book = _orderBooks[symbol];
+            if (onlySynced && book.Status != OrderBookStatus.Synced)
+            {
+                return Enumerable.Empty<ISymbolOrderBookEntry>();
+            }
+
+            return book.Bids;
         }
 
         /// <inheritdoc/>
-        public (IEnumerable<ISymbolOrderBookEntry> bids, IEnumerable<ISymbolOrderBookEntry> asks) GetBook(string symbol)
+        public (IEnumerable<ISymbolOrderBookEntry> bids, IEnumerable<ISymbolOrderBookEntry> asks) GetBook(string symbol, bool onlySynced = false)
         {
-            return (GetBids(symbol), GetAsks(symbol));
+            return (GetBids(symbol, onlySynced), GetAsks(symbol, onlySynced));
         }
 
         private void Reset()
