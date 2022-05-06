@@ -63,7 +63,7 @@ namespace Valr.Net.OrderBooks
                 await StopAsync().ConfigureAwait(false);
             }, false);
 
-            CallResult<UpdateSubscription> subResult = await _socketClient.SpotStreams.SubscribeToAggregateOrderbookUpdatesAsync(Symbols, HandleUpdate, ct.Value);
+            CallResult<UpdateSubscription> subResult = await _socketClient.SpotStreams.SubscribeToAggregateOrderbookUpdatesAsync(Symbols, HandleUpdate, ct ?? default);
 
             _subscription = subResult.Data;
             _subscription.ConnectionLost += () =>

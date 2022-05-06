@@ -5,17 +5,21 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using CryptoExchange.Net.Objects;
 using Valr.Net.Clients;
 using Valr.Net.Interfaces.Clients;
 using Valr.Net.Objects.Models;
 using Valr.Net.Objects.Models.General.Streams;
 using Valr.Net.Objects.Models.Spot.Streams;
+using Valr.Net.Objects.Options;
+using Valr.Net.OrderBooks;
 
 namespace Valr.Net.IntegrationTests
 {
     public class WebsocketTests
     {
         IValrSocketClient _valrSocketCLient { get; set; }
+        IValrClient _valrClient { get; set; }
         private string _key;
         private string _secret;
         IConfiguration Configuration { get; set; }
@@ -84,6 +88,47 @@ namespace Valr.Net.IntegrationTests
             {
                 "BTCZAR"
             }, SnapShotResult, UpdateResult);
+
+            Assert.IsTrue(result.Success);
+        }
+
+        [Test]
+        public async Task TestSynchronisedOrderBook()
+        {
+            _valrSocketCLient = new ValrSocketClient(new Objects.Options.ValrSocketClientOptions
+            {
+                ApiCredentials = new ApiCredentials(_key, _secret),
+                SocketNoDataTimeout = TimeSpan.FromSeconds(10),
+                LogLevel = LogLevel.Trace,
+                AutoReconnect = true,
+                MaxReconnectTries = 5
+            });
+
+            _valrClient = new ValrClient(new ValrClientOptions()
+            {
+                // Specify options for the client
+                ApiCredentials = new ApiCredentials(_key, _secret),
+                LogLevel = LogLevel.Trace,
+                SpotApiOptions = new ValrApiClientOptions
+                {
+                    RateLimitingBehaviour = RateLimitingBehaviour.Wait
+                },
+                GeneralApiOptions = new ValrApiClientOptions
+                {
+                    RateLimitingBehaviour = RateLimitingBehaviour.Wait
+                }
+            });
+
+            var _subscription = new ValrSpotSymbolOrderBookAggregated(new[] { "BTCZAR", "ETHZAR", "XRPZAR", "SOLZAR", "USDCZAR", "BNBZAR", "SHIBZAR" },
+                new ValrOrderBookOptions()
+                {
+                    LogLevel = LogLevel.Warning,
+                    //LogWriters = new List<ILogger>() { _logger },
+                    UpdateInterval = 100,
+                    SocketClient = _valrSocketCLient,
+                    RestClient = _valrClient
+                });
+            var result = await _subscription.StartAsync();
 
             Assert.IsTrue(result.Success);
         }
